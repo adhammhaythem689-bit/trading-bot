@@ -31,7 +31,7 @@ function Chip({ children, bg = "#111827", color = "#d1d5db", title }) {
 }
 
 function RunChip({ label, run, now, nextAt, previousSlot, lateMinutes }) {
-  const due = isRunDue(run, previousSlot);
+  const due = isRunDue(run, previousSlot, now);
   const when = due
     ? `due now (slot was ${timeAgo(previousSlot.toISOString(), now)}, GitHub usually starts 10–20 min late)`
     : `next ${timeUntil(nextAt, now)}`;

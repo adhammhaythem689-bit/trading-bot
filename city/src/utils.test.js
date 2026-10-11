@@ -55,9 +55,16 @@ describe("schedule helpers", () => {
     const now = new Date("2026-01-01T12:18:00Z");
     const slot = previousHourlySlot(now);
     expect(slot.toISOString()).toBe("2026-01-01T12:05:00.000Z");
-    expect(isRunDue({ started_at: "2026-01-01T11:17:00Z" }, slot)).toBe(true);
-    expect(isRunDue({ started_at: "2026-01-01T12:16:00Z" }, slot)).toBe(false);
-    expect(isRunDue(null, slot)).toBe(true);
+    const t = now.getTime();
+    expect(isRunDue({ started_at: "2026-01-01T11:17:00Z" }, slot, t)).toBe(true);
+    expect(isRunDue({ started_at: "2026-01-01T12:16:00Z" }, slot, t)).toBe(false);
+    expect(isRunDue(null, slot, t)).toBe(true);
+  });
+
+  it("a slot from hours ago is not 'due', the next slot is", () => {
+    const slot = new Date("2026-01-01T00:15:00Z");
+    const later = new Date("2026-01-01T16:00:00Z").getTime();
+    expect(isRunDue(null, slot, later)).toBe(false);
   });
 
   it("timeAgo reads naturally", () => {

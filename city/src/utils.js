@@ -58,7 +58,10 @@ export function previousDailySlot(now = new Date()) {
 // GitHub's scheduler typically starts the job 10-20 minutes after the cron
 // time. If the latest slot has passed with no run since, the run is "due",
 // not "next in 50 min".
-export function isRunDue(run, previousSlot) {
+// Only within a grace window, though: a slot from hours ago that never
+// produced a log isn't "about to run", the next slot is what's coming.
+export function isRunDue(run, previousSlot, now = Date.now(), graceMinutes = 45) {
+  if (now - previousSlot.getTime() > graceMinutes * 60 * 1000) return false;
   if (!run) return true;
   return new Date(run.started_at) < previousSlot;
 }
