@@ -33,18 +33,22 @@ analyzer = SentimentIntensityAnalyzer()
 
 def get_news_sentiment(max_headlines=40):
     headlines = []
+    feeds_failed = []
     for url in RSS_FEEDS:
         try:
             feed = feedparser.parse(url)
-            for entry in feed.entries[:20]:
-                if hasattr(entry, "title"):
-                    headlines.append(entry.title)
+            entries = [e.title for e in feed.entries[:20] if hasattr(e, "title")]
+            if not entries:
+                feeds_failed.append(url)
+            headlines.extend(entries)
         except Exception as e:
             print(f"Warning: failed to fetch {url}: {e}")
+            feeds_failed.append(url)
 
     headlines = headlines[:max_headlines]
     if not headlines:
-        return {"headline_count": 0, "avg_compound": 0.0, "label": "unknown", "sample": []}
+        return {"headline_count": 0, "avg_compound": 0.0, "label": "unknown", "sample": [],
+                "feeds_failed": feeds_failed}
 
     scores = [analyzer.polarity_scores(h)["compound"] for h in headlines]
     avg = sum(scores) / len(scores)
@@ -61,6 +65,7 @@ def get_news_sentiment(max_headlines=40):
         "avg_compound": round(avg, 4),
         "label": label,
         "sample": headlines[:5],
+        "feeds_failed": feeds_failed,
     }
 
 

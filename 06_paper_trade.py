@@ -24,6 +24,7 @@ Usage:
     python 06_paper_trade.py --once      # check one time right now and exit (for testing)
 """
 import ccxt
+import csv
 import pandas as pd
 import json
 import os
@@ -35,9 +36,12 @@ from importlib import import_module
 from engine.config import DEFAULT_CONFIG
 from engine.features import prepare, compute_bins
 from engine.backtest import step_decision
+from engine.data import validate_ohlcv
+from engine.runlog import RunLogger
 
 _market_context_mod = import_module("09_market_context")
-get_market_context = _market_context_mod.get_market_context
+get_news_sentiment = _market_context_mod.get_news_sentiment
+get_fear_greed = _market_context_mod.get_fear_greed
 
 SYMBOL = "BTC/USD"
 TIMEFRAME = "1h"
@@ -88,12 +92,14 @@ def load_learned_filters():
     return filters, bins
 
 
-def log_event(event):
-    header_needed = not os.path.exists(LOG_FILE)
-    with open(LOG_FILE, "a") as f:
+def append_csv(path, header, row):
+    """Append one row with proper quoting, notes like "SELL at 83000, pnl +1%" contain commas."""
+    header_needed = not os.path.exists(path)
+    with open(path, "a", newline="") as f:
+        writer = csv.writer(f)
         if header_needed:
-            f.write("timestamp,event,price,cash,btc,equity,note\n")
-        f.write(",".join(str(x) for x in event) + "\n")
+            writer.writerow(header)
+        writer.writerow(row)
 
 
 def fetch_candles():
@@ -104,45 +110,125 @@ def fetch_candles():
     return df
 
 
-def run_once(state, learned_filters, bins):
-    raw = fetch_candles()
-    df = prepare(raw, config)
+HOURLY_STEPS = [
+    ("fetch_prices", "price_fetcher", "Pull the latest hourly BTC/USD candles from Kraken"),
+    ("check_data", "data_checker", "Check the candles for gaps, duplicates and bad prices"),
+    ("compute_indicators", "indicator_analyst", "Compute the 24h and 72h moving averages"),
+    ("check_signal", "signal_watcher", "Check whether the averages crossed this hour"),
+    ("check_risk", "risk_officer", "Check drawdown against the kill switch and the stop-loss"),
+    ("read_news", "news_reader", "Read crypto headlines and score their sentiment"),
+    ("read_mood", "mood_analyst", "Read the Crypto Fear & Greed index"),
+    ("decide_trade", "trader", "Decide buy / sell / hold and update the paper portfolio"),
+    ("save_state", "record_keeper", "Save the portfolio and logs for GitHub to commit"),
+]
 
-    latest = df.iloc[-1]
-    latest_ts = str(latest["timestamp"])
+
+def run_once(state, learned_filters, bins):
+    log = RunLogger("hourly", HOURLY_STEPS)
+    try:
+        state = _run_steps(log, state, learned_filters, bins)
+    finally:
+        log.write()
+    return state
+
+
+def _run_steps(log, state, learned_filters, bins):
+    with log.step("fetch_prices") as s:
+        raw = fetch_candles()
+        s.output(source=f"Kraken {SYMBOL}", candles=len(raw),
+                 latest_candle=raw["timestamp"].iloc[-1], latest_close=raw["close"].iloc[-1])
+
+    with log.step("check_data") as s:
+        raw, warnings = validate_ohlcv(raw, source="Kraken live fetch")
+        s.output(rows_checked=len(raw), warnings=[f"{w.kind}: {w.detail}" for w in warnings],
+                 verdict="clean" if not warnings else "warnings found")
+
+    with log.step("compute_indicators") as s:
+        df = prepare(raw, config)
+        latest = df.iloc[-1]
+        latest_ts = str(latest["timestamp"])
+        gap_pct = (latest["short_ma"] - latest["long_ma"]) / latest["long_ma"] * 100
+        s.output(candle=latest_ts, close=latest["close"],
+                 short_ma=round(latest["short_ma"], 2), long_ma=round(latest["long_ma"], 2),
+                 gap_pct=round(gap_pct, 3),
+                 windows=f"{config.short_window}h / {config.long_window}h")
 
     if state["last_candle_ts"] == latest_ts:
-        print(f"[{datetime.now(timezone.utc).isoformat()}] No new candle yet (last processed: {latest_ts}). Skipping.")
+        reason = f"No new hourly candle since the last run ({latest_ts}), nothing to decide"
+        print(f"[{datetime.now(timezone.utc).isoformat()}] {reason}. Skipping.")
+        log.skip_remaining(reason)
+        log.finish("skipped", reason)
         return state
 
-    try:
-        context = get_market_context()
-        news_label = context["news"]["label"]
-        news_score = context["news"]["avg_compound"]
-        fear_greed = context["fear_greed"]["value"]
-        fear_greed_label = context["fear_greed"]["label"]
-    except Exception as e:
-        print(f"Warning: could not fetch market context: {e}")
-        news_label, news_score, fear_greed, fear_greed_label = "unknown", 0.0, None, "unknown"
+    with log.step("check_signal") as s:
+        change = latest["position_change"]
+        crossover = "bullish (24h crossed above 72h)" if change == 1 else \
+                    "bearish (24h crossed below 72h)" if change == -1 else "none"
+        trend_up = latest["signal"] == 1
+        if change == 1:
+            meaning = "Buy signal: entering a position unless risk rules block it"
+        elif change == -1:
+            meaning = "Sell signal: exiting the position if one is open"
+        elif trend_up and not state["in_position"]:
+            meaning = "Trend is up, but the bot only buys in the hour the cross happens, so it waits"
+        elif trend_up:
+            meaning = "Trend still up, holding the open position"
+        else:
+            meaning = "Trend is down, staying out of the market"
+        s.output(crossover=crossover, trend="24h above 72h" if trend_up else "24h below 72h",
+                 what_it_means=meaning)
 
-    header_needed = not os.path.exists(CONTEXT_LOG_FILE)
-    with open(CONTEXT_LOG_FILE, "a") as f:
-        if header_needed:
-            f.write("timestamp,news_label,news_score,fear_greed,fear_greed_label\n")
-        f.write(f"{latest_ts},{news_label},{news_score},{fear_greed},{fear_greed_label}\n")
-    print(f"Market context: news={news_label} ({news_score:+.3f}), fear_greed={fear_greed} ({fear_greed_label})")
+    with log.step("check_risk") as s:
+        price = latest["close"]
+        equity = state["cash"] + state["btc"] * price
+        peak = max(state["peak_equity"], equity)
+        drawdown_pct = (equity - peak) / peak * 100
+        risk = {"equity": round(equity, 2), "peak_equity": round(peak, 2),
+                "drawdown_pct": round(drawdown_pct, 2),
+                "kill_switch_at_pct": -config.max_drawdown_kill * 100,
+                "trading_halted": state["trading_halted"]}
+        if state["in_position"]:
+            stop_price = state["entry_price"] * (1 - config.stop_loss_pct)
+            risk.update(entry_price=round(state["entry_price"], 2), stop_loss_price=round(stop_price, 2),
+                        distance_to_stop_pct=round((price - stop_price) / price * 100, 2))
+        else:
+            risk["position"] = "flat, no stop-loss to watch"
+        s.output(**risk)
 
-    state, note = step_decision(state, latest, config, learned_filters=learned_filters, bins=bins)
-    price = latest["close"]
-    equity_now = state["cash"] + state["btc"] * price
-    print(f"[{latest_ts}] price={price:.2f} equity=${equity_now:.2f} "
-          f"in_position={state['in_position']} halted={state['trading_halted']} | {note}")
+    with log.step("read_news") as s:
+        news = get_news_sentiment()
+        s.output(headlines=news["headline_count"], sentiment=news["label"],
+                 score=news["avg_compound"], sample=news["sample"][:3],
+                 feeds_failed=news.get("feeds_failed", []),
+                 used_for_decisions="no, logged for future research only")
 
-    note_with_context = f"{note} | news={news_label} fear_greed={fear_greed}"
-    log_event([latest_ts, "tick", price, state["cash"], state["btc"], equity_now, note_with_context])
+    with log.step("read_mood") as s:
+        mood = get_fear_greed()
+        s.output(value=mood["value"], label=mood["label"],
+                 used_for_decisions="no, logged for future research only")
 
-    state["last_candle_ts"] = latest_ts
-    save_state(state)
+    with log.step("decide_trade") as s:
+        before = {"cash": state["cash"], "btc": state["btc"]}
+        state, note = step_decision(state, latest, config, learned_filters=learned_filters, bins=bins)
+        equity_now = state["cash"] + state["btc"] * price
+        s.output(decision=note, price=price, cash_before=round(before["cash"], 2),
+                 cash_after=round(state["cash"], 2), btc_after=round(state["btc"], 8),
+                 equity=round(equity_now, 2), in_position=state["in_position"])
+        print(f"[{latest_ts}] price={price:.2f} equity=${equity_now:.2f} "
+              f"in_position={state['in_position']} halted={state['trading_halted']} | {note}")
+
+    with log.step("save_state") as s:
+        append_csv(CONTEXT_LOG_FILE, ["timestamp", "news_label", "news_score", "fear_greed", "fear_greed_label"],
+                   [latest_ts, news["label"], news["avg_compound"], mood["value"], mood["label"]])
+        note_with_context = f"{note} | news={news['label']} fear_greed={mood['value']}"
+        append_csv(LOG_FILE, ["timestamp", "event", "price", "cash", "btc", "equity", "note"],
+                   [latest_ts, "tick", price, state["cash"], state["btc"], equity_now, note_with_context])
+        state["last_candle_ts"] = latest_ts
+        save_state(state)
+        s.output(files=[STATE_FILE, LOG_FILE, CONTEXT_LOG_FILE],
+                 pushed_by="GitHub Actions, right after this run")
+
+    log.finish("done", note)
     return state
 
 

@@ -24,11 +24,15 @@ def load_ohlcv_csv(path, timeframe_hours=1):
     on structurally broken input (missing required columns).
     """
     df = pd.read_csv(path, parse_dates=["timestamp"])
+    return validate_ohlcv(df, timeframe_hours, source=path)
 
+
+def validate_ohlcv(df, timeframe_hours=1, source="dataframe"):
+    """Same checks as load_ohlcv_csv, for data already in memory (e.g. a live fetch)."""
     required = {"timestamp", "open", "high", "low", "close", "volume"}
     missing = required - set(df.columns)
     if missing:
-        raise ValueError(f"{path} is missing required columns: {missing}")
+        raise ValueError(f"{source} is missing required columns: {missing}")
 
     warnings = []
 

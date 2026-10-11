@@ -32,42 +32,83 @@ from engine.features import prepare
 from engine.learning import label_trades_with_conditions, learn_filters
 from engine.backtest import run_backtest
 from engine.metrics import compute_metrics
+from engine.runlog import RunLogger
 
 HISTORY_FILE = "relearn_history.csv"
 LEARNED_FILTERS_FILE = "learned_filters.json"
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60  # once per day
 
 
+DAILY_STEPS = [
+    ("load_history", "historian", "Load the stored 2-year BTC price history and check its quality"),
+    ("find_patterns", "pattern_researcher", "Tag past trades by market conditions and count trustworthy patterns"),
+    ("validate_filter", "validator", "Test whether the pattern filter helps on data it never saw"),
+    ("save_filters", "pattern_researcher", "Save the pattern table the hourly trader reads"),
+]
+
+
 def run_once():
+    log = RunLogger("daily", DAILY_STEPS)
+    try:
+        _run_steps(log)
+    finally:
+        log.write()
+
+
+def _run_steps(log):
     print(f"[{datetime.now(timezone.utc).isoformat()}] Re-running self-analysis...")
     config = DEFAULT_CONFIG
-    df_full, warnings = load_ohlcv_csv("btc_usdt_1h.csv")
-    for w in warnings:
-        print(f"  Data quality warning: {w}")
 
-    split_idx = int(len(df_full) * 0.75)
-    train_df = df_full.iloc[:split_idx].reset_index(drop=True)
-    test_df = df_full.iloc[split_idx:].reset_index(drop=True)
+    with log.step("load_history") as s:
+        df_full, warnings = load_ohlcv_csv("btc_usdt_1h.csv")
+        for w in warnings:
+            print(f"  Data quality warning: {w}")
+        s.output(candles=len(df_full), first_candle=df_full["timestamp"].iloc[0],
+                 last_candle=df_full["timestamp"].iloc[-1],
+                 warnings=[f"{w.kind}: {w.detail}" for w in warnings],
+                 note="This file is not refreshed on a schedule, it only grows when 01_fetch_data.py is run")
 
-    train_prepared = prepare(train_df, config)
-    test_prepared = prepare(test_df, config)
+    with log.step("find_patterns") as s:
+        split_idx = int(len(df_full) * 0.75)
+        train_df = df_full.iloc[:split_idx].reset_index(drop=True)
+        test_df = df_full.iloc[split_idx:].reset_index(drop=True)
+        train_prepared = prepare(train_df, config)
+        test_prepared = prepare(test_df, config)
 
-    labeled, bins = label_trades_with_conditions(train_prepared, config)
-    learned_filters = learn_filters(labeled, config.min_samples)
-    reliable_count = sum(1 for v in learned_filters.values() if v["reliable"])
+        labeled, bins = label_trades_with_conditions(train_prepared, config)
+        learned_filters = learn_filters(labeled, config.min_samples)
+        reliable_count = sum(1 for v in learned_filters.values() if v["reliable"])
+        most_seen = sorted(learned_filters.items(), key=lambda kv: kv[1]["n"], reverse=True)[:3]
+        s.output(training_period=f"{train_df['timestamp'].iloc[0]} to {train_df['timestamp'].iloc[-1]}",
+                 trades_tagged=len(labeled), patterns_found=len(learned_filters),
+                 reliable_patterns=reliable_count, trades_needed_per_pattern=config.min_samples,
+                 most_common=[f"{combo} (n={info['n']}, win {info['win_rate']}%)" for combo, info in most_seen])
 
-    baseline = compute_metrics(run_backtest(test_prepared, config), config.starting_balance)
-    adaptive = compute_metrics(run_backtest(test_prepared, config, learned_filters=learned_filters, bins=bins),
-                                config.starting_balance)
-    filter_helped = adaptive["return_pct"] > baseline["return_pct"]
+    with log.step("validate_filter") as s:
+        baseline = compute_metrics(run_backtest(test_prepared, config), config.starting_balance)
+        adaptive = compute_metrics(run_backtest(test_prepared, config, learned_filters=learned_filters, bins=bins),
+                                    config.starting_balance)
+        filter_helped = adaptive["return_pct"] > baseline["return_pct"]
+        s.output(test_period=f"{test_df['timestamp'].iloc[0]} to {test_df['timestamp'].iloc[-1]}",
+                 without_filter_return_pct=round(baseline["return_pct"], 2),
+                 with_filter_return_pct=round(adaptive["return_pct"], 2),
+                 trades_skipped_by_filter=adaptive["skipped_by_filter"],
+                 verdict="filter helped" if filter_helped else
+                         "no difference, no pattern is trusted yet" if reliable_count == 0 else "filter did not help")
 
-    # also compute on the FULL dataset (not just training split) for the saved lookup table,
-    # since this is what 06_paper_trade.py actually loads and uses
-    full_prepared = prepare(df_full, config)
-    full_labeled, full_bins = label_trades_with_conditions(full_prepared, config)
-    full_filters = learn_filters(full_labeled, config.min_samples)
-    with open(LEARNED_FILTERS_FILE, "w") as f:
-        json.dump(full_filters, f, indent=2)
+    with log.step("save_filters") as s:
+        # computed on the FULL dataset for the saved lookup table, since this
+        # is what 06_paper_trade.py actually loads and uses
+        full_prepared = prepare(df_full, config)
+        full_labeled, full_bins = label_trades_with_conditions(full_prepared, config)
+        full_filters = learn_filters(full_labeled, config.min_samples)
+        with open(LEARNED_FILTERS_FILE, "w") as f:
+            json.dump(full_filters, f, indent=2)
+        s.output(file=LEARNED_FILTERS_FILE, patterns_saved=len(full_filters),
+                 reliable_saved=sum(1 for v in full_filters.values() if v["reliable"]))
+
+    log.finish("done", f"{reliable_count}/{len(learned_filters)} patterns trusted, "
+                       f"filter helped: {filter_helped}")
 
     row = {
         "timestamp": datetime.now(timezone.utc).isoformat(),

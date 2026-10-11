@@ -31,11 +31,17 @@ jobs:
       - name: Run test suite before committing new learned filters
         run: python -m pytest tests/ -v
 
+      # always() so a failed run still publishes its run log; the pattern table is only
+      # committed when both the run and the test suite succeeded
       - name: Commit updated learning artifacts
+        if: always()
         run: |
           git config user.name "trading-bot-ci"
           git config user.email "actions@users.noreply.github.com"
-          git add learned_filters.json relearn_history.csv
-          git diff --quiet --cached || git commit -m "Daily re-learn $(date -u +%Y-%m-%d)"
-          git pull --rebase origin main
+          if [ -d runlog ]; then git add runlog/; fi
+          if [ "${{ job.status }}" = "success" ]; then
+            git add learned_filters.json relearn_history.csv
+          fi
+          git diff --quiet --cached || git commit -m "Daily re-learn $(date -u +%Y-%m-%d) (${{ job.status }})"
+          git pull --rebase --autostash origin main
           git push

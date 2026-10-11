@@ -28,11 +28,17 @@ jobs:
       - name: Run paper trader (single check)
         run: python 06_paper_trade.py --once
 
+      # always() so a failed run still publishes its run log (which step broke, and why);
+      # trading state is only committed when the run succeeded
       - name: Commit updated state and logs
+        if: always()
         run: |
           git config user.name "trading-bot-ci"
           git config user.email "actions@users.noreply.github.com"
-          git add paper_state.json paper_trade_log.csv market_context_log.csv
-          git diff --quiet --cached || git commit -m "Paper trade tick $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase origin main
+          if [ -d runlog ]; then git add runlog/; fi
+          if [ "${{ job.status }}" = "success" ]; then
+            git add paper_state.json paper_trade_log.csv market_context_log.csv
+          fi
+          git diff --quiet --cached || git commit -m "Paper trade tick $(date -u +%Y-%m-%dT%H:%M:%SZ) (${{ job.status }})"
+          git pull --rebase --autostash origin main
           git push
