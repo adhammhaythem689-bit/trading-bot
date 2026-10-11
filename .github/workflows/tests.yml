@@ -21,3 +21,22 @@ jobs:
 
       - name: Run test suite
         run: python -m pytest tests/ -v
+
+  test-city:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: city/package-lock.json
+
+      - name: Install dependencies
+        working-directory: city
+        run: npm ci
+
+      - name: Run city frontend test suite
+        working-directory: city
+        run: npm run test
