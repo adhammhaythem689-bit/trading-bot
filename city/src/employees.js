@@ -61,7 +61,7 @@ export const EMPLOYEES = [
 ];
 
 export const RUN_SCHEDULES = {
-  hourly: "Every hour at :05 UTC (GitHub Actions can start a few minutes late)",
+  hourly: "Every hour at :05 UTC (GitHub usually starts it 10–20 minutes late)",
   daily: "Once a day at 00:15 UTC",
   manual: "Not scheduled, runs only when started by hand",
 };

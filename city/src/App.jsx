@@ -6,7 +6,8 @@ import { EmployeePanel, BuildingPanel } from "./Panels";
 import { EMPLOYEES } from "./employees";
 import { useLiveData, IS_GITHUB_SOURCE, DATA_BASE } from "./liveData";
 import {
-  employeeSteps, employeeStatus, nextHourlyRun, nextDailyRun, timeAgo, timeUntil, formatTime,
+  employeeSteps, employeeStatus, nextHourlyRun, nextDailyRun, previousHourlySlot, previousDailySlot, isRunDue,
+  timeAgo, timeUntil, formatTime,
   STATUS_COLORS, HOURLY_LATE_MINUTES, DAILY_LATE_MINUTES, isSnapshotStale,
 } from "./utils";
 
@@ -29,14 +30,18 @@ function Chip({ children, bg = "#111827", color = "#d1d5db", title }) {
   );
 }
 
-function RunChip({ label, run, now, nextAt, lateMinutes }) {
-  if (!run) return <Chip>{label}: no run logged yet · next {timeUntil(nextAt, now)}</Chip>;
+function RunChip({ label, run, now, nextAt, previousSlot, lateMinutes }) {
+  const due = isRunDue(run, previousSlot);
+  const when = due
+    ? `due now (slot was ${timeAgo(previousSlot.toISOString(), now)}, GitHub usually starts 10–20 min late)`
+    : `next ${timeUntil(nextAt, now)}`;
+  if (!run) return <Chip>{label}: no run logged yet · {when}</Chip>;
   const late = isSnapshotStale(run.finished_at, lateMinutes, now);
   const color = STATUS_COLORS[run.status] || "#9ca3af";
   return (
     <Chip title={run.summary || ""} bg={late ? "#78350f" : "#111827"}>
       <span style={{ color }}>●</span> {label}: {run.status} {timeAgo(run.finished_at, now)}
-      {late ? " · LATE, schedule may be stuck" : ` · next ${timeUntil(nextAt, now)}`}
+      {late ? " · LATE, schedule may be stuck" : ` · ${when}`}
     </Chip>
   );
 }
@@ -86,8 +91,10 @@ export default function App() {
         <Chip bg={IS_GITHUB_SOURCE ? "#064e3b" : "#7c2d12"} color="#fff">
           <b>{IS_GITHUB_SOURCE ? "LIVE FROM GITHUB" : "LOCAL TEST DATA"}</b>
         </Chip>
-        <RunChip label="Hourly run" run={live.hourly} now={now} nextAt={nextHourlyRun(new Date(now))} lateMinutes={HOURLY_LATE_MINUTES} />
-        <RunChip label="Daily run" run={live.daily} now={now} nextAt={nextDailyRun(new Date(now))} lateMinutes={DAILY_LATE_MINUTES} />
+        <RunChip label="Hourly run" run={live.hourly} now={now} nextAt={nextHourlyRun(new Date(now))}
+          previousSlot={previousHourlySlot(new Date(now))} lateMinutes={HOURLY_LATE_MINUTES} />
+        <RunChip label="Daily run" run={live.daily} now={now} nextAt={nextDailyRun(new Date(now))}
+          previousSlot={previousDailySlot(new Date(now))} lateMinutes={DAILY_LATE_MINUTES} />
         <Chip title="GitHub can cache files for up to 5 minutes">
           {live.loading ? "Loading…" : `Checked ${IS_GITHUB_SOURCE ? "GitHub" : "local data"} ${timeAgo(live.fetchedAt, now)}`}
         </Chip>

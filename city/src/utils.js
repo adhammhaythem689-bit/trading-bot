@@ -43,6 +43,26 @@ export function nextHourlyRun(now = new Date()) {
   return d;
 }
 
+export function previousHourlySlot(now = new Date()) {
+  const d = nextHourlyRun(now);
+  d.setUTCHours(d.getUTCHours() - 1);
+  return d;
+}
+
+export function previousDailySlot(now = new Date()) {
+  const d = nextDailyRun(now);
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d;
+}
+
+// GitHub's scheduler typically starts the job 10-20 minutes after the cron
+// time. If the latest slot has passed with no run since, the run is "due",
+// not "next in 50 min".
+export function isRunDue(run, previousSlot) {
+  if (!run) return true;
+  return new Date(run.started_at) < previousSlot;
+}
+
 export function nextDailyRun(now = new Date()) {
   const d = new Date(now);
   d.setUTCHours(0, 15, 0, 0);

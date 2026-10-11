@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   isSnapshotStale, employeeStatus, employeeSteps, nextHourlyRun, nextDailyRun, timeAgo, formatValue,
+  previousHourlySlot, isRunDue,
 } from "./utils";
 
 describe("isSnapshotStale", () => {
@@ -50,6 +51,15 @@ describe("schedule helpers", () => {
     expect(nextDailyRun(new Date("2026-01-01T00:10:00Z")).toISOString()).toBe("2026-01-01T00:15:00.000Z");
     expect(nextDailyRun(new Date("2026-01-01T09:00:00Z")).toISOString()).toBe("2026-01-02T00:15:00.000Z");
   });
+  it("a run is due when its slot passed without one, not 'next in 50 min'", () => {
+    const now = new Date("2026-01-01T12:18:00Z");
+    const slot = previousHourlySlot(now);
+    expect(slot.toISOString()).toBe("2026-01-01T12:05:00.000Z");
+    expect(isRunDue({ started_at: "2026-01-01T11:17:00Z" }, slot)).toBe(true);
+    expect(isRunDue({ started_at: "2026-01-01T12:16:00Z" }, slot)).toBe(false);
+    expect(isRunDue(null, slot)).toBe(true);
+  });
+
   it("timeAgo reads naturally", () => {
     const now = new Date("2026-01-01T12:00:00Z").getTime();
     expect(timeAgo("2026-01-01T11:59:40Z", now)).toBe("just now");
