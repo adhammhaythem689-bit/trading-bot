@@ -2,9 +2,18 @@
 Step 6: live paper trading.
 
 Runs the exact same MA-crossover + risk-management logic from step 5, but now
-against live price updates from Binance's public API instead of a fixed CSV.
+against live price updates from Kraken's public API instead of a fixed CSV.
 No account or API key needed, this only reads public market data and tracks
 a simulated ("paper") balance locally in paper_state.json.
+
+Uses Kraken rather than Binance here specifically because Binance blocks
+requests from cloud/datacenter IP ranges (including GitHub Actions runners,
+error 451 "restricted location"), while our historical data in btc_usdt_1h.csv
+was fetched from Binance earlier from a residential connection, which isn't
+blocked. Kraken's BTC/USD price tracks Binance's BTC/USDT closely enough that
+this doesn't meaningfully affect the strategy, but it's worth knowing the
+live feed and the backtested history come from different (very similar)
+venues.
 
 Usage:
     python 06_paper_trade.py            # run forever, check once per hour
@@ -22,7 +31,7 @@ from importlib import import_module
 _market_context_mod = import_module("09_market_context")
 get_market_context = _market_context_mod.get_market_context
 
-SYMBOL = "BTC/USDT"
+SYMBOL = "BTC/USD"
 TIMEFRAME = "1h"
 SHORT_WINDOW = 24
 LONG_WINDOW = 72
@@ -36,7 +45,7 @@ STATE_FILE = "paper_state.json"
 LOG_FILE = "paper_trade_log.csv"
 CONTEXT_LOG_FILE = "market_context_log.csv"
 
-exchange = ccxt.binance()
+exchange = ccxt.kraken()
 
 
 def load_state():
