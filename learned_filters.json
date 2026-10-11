@@ -1,4 +1,16 @@
 {
+  "volatility=high|momentum=strong|hour=afternoon|trend=strong|volume=high": {
+    "n": 6,
+    "win_rate": 33.3,
+    "avg_pnl_pct": -0.39,
+    "reliable": false
+  },
+  "volatility=high|momentum=strong|hour=afternoon|trend=strong|volume=low": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -2.75,
+    "reliable": false
+  },
   "volatility=high|momentum=strong|hour=afternoon|trend=weak|volume=high": {
     "n": 1,
     "win_rate": 100.0,
@@ -11,16 +23,10 @@
     "avg_pnl_pct": 9.79,
     "reliable": false
   },
-  "volatility=high|momentum=weak|hour=afternoon|trend=strong|volume=low": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 0.61,
-    "reliable": false
-  },
-  "volatility=high|momentum=strong|hour=night|trend=strong|volume=high": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 6.27,
+  "volatility=high|momentum=strong|hour=evening|trend=strong|volume=low": {
+    "n": 8,
+    "win_rate": 12.5,
+    "avg_pnl_pct": -1.16,
     "reliable": false
   },
   "volatility=high|momentum=strong|hour=morning|trend=strong|volume=high": {
@@ -29,172 +35,10 @@
     "avg_pnl_pct": 4.46,
     "reliable": false
   },
-  "volatility=low|momentum=strong|hour=afternoon|trend=weak|volume=high": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 2.23,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=evening|trend=strong|volume=low": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 0.6,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=afternoon|trend=strong|volume=high": {
-    "n": 2,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 1.27,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=night|trend=strong|volume=low": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 2.89,
-    "reliable": false
-  },
-  "volatility=medium|momentum=strong|hour=night|trend=strong|volume=high": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 0.7,
-    "reliable": false
-  },
-  "volatility=medium|momentum=weak|hour=night|trend=strong|volume=high": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 7.55,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=evening|trend=strong|volume=high": {
-    "n": 2,
-    "win_rate": 50.0,
-    "avg_pnl_pct": -0.1,
-    "reliable": false
-  },
-  "volatility=high|momentum=weak|hour=night|trend=weak|volume=high": {
-    "n": 2,
-    "win_rate": 50.0,
-    "avg_pnl_pct": -0.27,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=evening|trend=weak|volume=low": {
-    "n": 2,
-    "win_rate": 50.0,
-    "avg_pnl_pct": 1.02,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=night|trend=strong|volume=high": {
-    "n": 2,
-    "win_rate": 50.0,
-    "avg_pnl_pct": 0.72,
-    "reliable": false
-  },
-  "volatility=medium|momentum=strong|hour=night|trend=strong|volume=low": {
-    "n": 2,
-    "win_rate": 50.0,
-    "avg_pnl_pct": 0.67,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=afternoon|trend=strong|volume=high": {
-    "n": 2,
-    "win_rate": 50.0,
-    "avg_pnl_pct": 0.26,
-    "reliable": false
-  },
-  "volatility=medium|momentum=strong|hour=afternoon|trend=strong|volume=high": {
-    "n": 7,
-    "win_rate": 42.9,
-    "avg_pnl_pct": -0.27,
-    "reliable": false
-  },
   "volatility=high|momentum=strong|hour=morning|trend=strong|volume=low": {
     "n": 5,
     "win_rate": 40.0,
     "avg_pnl_pct": -0.03,
-    "reliable": false
-  },
-  "volatility=high|momentum=strong|hour=night|trend=strong|volume=low": {
-    "n": 10,
-    "win_rate": 40.0,
-    "avg_pnl_pct": 0.16,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=afternoon|trend=weak|volume=high": {
-    "n": 8,
-    "win_rate": 37.5,
-    "avg_pnl_pct": 1.87,
-    "reliable": false
-  },
-  "volatility=high|momentum=strong|hour=afternoon|trend=strong|volume=high": {
-    "n": 6,
-    "win_rate": 33.3,
-    "avg_pnl_pct": -0.39,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=evening|trend=weak|volume=low": {
-    "n": 9,
-    "win_rate": 33.3,
-    "avg_pnl_pct": 3.5,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=evening|trend=weak|volume=high": {
-    "n": 6,
-    "win_rate": 33.3,
-    "avg_pnl_pct": 0.42,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=morning|trend=weak|volume=low": {
-    "n": 3,
-    "win_rate": 33.3,
-    "avg_pnl_pct": -1.19,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=night|trend=weak|volume=high": {
-    "n": 3,
-    "win_rate": 33.3,
-    "avg_pnl_pct": -0.03,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=morning|trend=strong|volume=high": {
-    "n": 3,
-    "win_rate": 33.3,
-    "avg_pnl_pct": 0.24,
-    "reliable": false
-  },
-  "volatility=high|momentum=weak|hour=afternoon|trend=strong|volume=high": {
-    "n": 3,
-    "win_rate": 33.3,
-    "avg_pnl_pct": -0.48,
-    "reliable": false
-  },
-  "volatility=medium|momentum=strong|hour=morning|trend=strong|volume=low": {
-    "n": 4,
-    "win_rate": 25.0,
-    "avg_pnl_pct": -0.91,
-    "reliable": false
-  },
-  "volatility=medium|momentum=strong|hour=evening|trend=strong|volume=low": {
-    "n": 4,
-    "win_rate": 25.0,
-    "avg_pnl_pct": -0.13,
-    "reliable": false
-  },
-  "volatility=medium|momentum=weak|hour=afternoon|trend=weak|volume=high": {
-    "n": 7,
-    "win_rate": 14.3,
-    "avg_pnl_pct": 0.09,
-    "reliable": false
-  },
-  "volatility=high|momentum=strong|hour=evening|trend=strong|volume=low": {
-    "n": 8,
-    "win_rate": 12.5,
-    "avg_pnl_pct": -1.16,
-    "reliable": false
-  },
-  "volatility=high|momentum=weak|hour=evening|trend=weak|volume=high": {
-    "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -1.73,
     "reliable": false
   },
   "volatility=high|momentum=strong|hour=morning|trend=weak|volume=high": {
@@ -203,16 +47,28 @@
     "avg_pnl_pct": -4.42,
     "reliable": false
   },
-  "volatility=high|momentum=strong|hour=afternoon|trend=strong|volume=low": {
+  "volatility=high|momentum=strong|hour=night|trend=strong|volume=high": {
     "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -2.75,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 6.27,
     "reliable": false
   },
-  "volatility=high|momentum=weak|hour=night|trend=strong|volume=high": {
+  "volatility=high|momentum=strong|hour=night|trend=strong|volume=low": {
+    "n": 10,
+    "win_rate": 40.0,
+    "avg_pnl_pct": 0.16,
+    "reliable": false
+  },
+  "volatility=high|momentum=weak|hour=afternoon|trend=strong|volume=high": {
+    "n": 3,
+    "win_rate": 33.3,
+    "avg_pnl_pct": -0.48,
+    "reliable": false
+  },
+  "volatility=high|momentum=weak|hour=afternoon|trend=strong|volume=low": {
     "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -0.62,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 0.61,
     "reliable": false
   },
   "volatility=high|momentum=weak|hour=evening|trend=strong|volume=high": {
@@ -221,10 +77,118 @@
     "avg_pnl_pct": -0.06,
     "reliable": false
   },
+  "volatility=high|momentum=weak|hour=evening|trend=weak|volume=high": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -1.73,
+    "reliable": false
+  },
+  "volatility=high|momentum=weak|hour=night|trend=strong|volume=high": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -0.62,
+    "reliable": false
+  },
+  "volatility=high|momentum=weak|hour=night|trend=weak|volume=high": {
+    "n": 2,
+    "win_rate": 50.0,
+    "avg_pnl_pct": -0.27,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=afternoon|trend=strong|volume=high": {
+    "n": 2,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 1.27,
+    "reliable": false
+  },
   "volatility=low|momentum=strong|hour=afternoon|trend=strong|volume=low": {
     "n": 2,
     "win_rate": 0.0,
     "avg_pnl_pct": -1.66,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=afternoon|trend=weak|volume=high": {
+    "n": 1,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 2.23,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=evening|trend=strong|volume=high": {
+    "n": 2,
+    "win_rate": 50.0,
+    "avg_pnl_pct": -0.1,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=evening|trend=strong|volume=low": {
+    "n": 1,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 0.6,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=evening|trend=weak|volume=low": {
+    "n": 2,
+    "win_rate": 50.0,
+    "avg_pnl_pct": 1.02,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=morning|trend=strong|volume=high": {
+    "n": 3,
+    "win_rate": 33.3,
+    "avg_pnl_pct": 0.24,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=night|trend=strong|volume=high": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -0.93,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=night|trend=strong|volume=low": {
+    "n": 1,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 2.89,
+    "reliable": false
+  },
+  "volatility=low|momentum=strong|hour=night|trend=weak|volume=low": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -1.44,
+    "reliable": false
+  },
+  "volatility=low|momentum=weak|hour=afternoon|trend=strong|volume=high": {
+    "n": 2,
+    "win_rate": 50.0,
+    "avg_pnl_pct": 0.26,
+    "reliable": false
+  },
+  "volatility=low|momentum=weak|hour=afternoon|trend=weak|volume=high": {
+    "n": 8,
+    "win_rate": 37.5,
+    "avg_pnl_pct": 1.87,
+    "reliable": false
+  },
+  "volatility=low|momentum=weak|hour=afternoon|trend=weak|volume=low": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -1.83,
+    "reliable": false
+  },
+  "volatility=low|momentum=weak|hour=evening|trend=strong|volume=high": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -2.33,
+    "reliable": false
+  },
+  "volatility=low|momentum=weak|hour=evening|trend=weak|volume=high": {
+    "n": 6,
+    "win_rate": 33.3,
+    "avg_pnl_pct": 0.42,
+    "reliable": false
+  },
+  "volatility=low|momentum=weak|hour=evening|trend=weak|volume=low": {
+    "n": 9,
+    "win_rate": 33.3,
+    "avg_pnl_pct": 3.5,
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=morning|trend=strong|volume=high": {
@@ -239,40 +203,22 @@
     "avg_pnl_pct": -1.64,
     "reliable": false
   },
-  "volatility=low|momentum=weak|hour=afternoon|trend=weak|volume=low": {
-    "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -1.83,
+  "volatility=low|momentum=weak|hour=morning|trend=weak|volume=low": {
+    "n": 3,
+    "win_rate": 33.3,
+    "avg_pnl_pct": -1.19,
     "reliable": false
   },
-  "volatility=low|momentum=strong|hour=night|trend=weak|volume=low": {
-    "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -1.44,
-    "reliable": false
-  },
-  "volatility=low|momentum=strong|hour=night|trend=strong|volume=high": {
-    "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -0.93,
-    "reliable": false
-  },
-  "volatility=low|momentum=weak|hour=evening|trend=strong|volume=high": {
-    "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -2.33,
-    "reliable": false
-  },
-  "volatility=medium|momentum=strong|hour=evening|trend=strong|volume=high": {
+  "volatility=low|momentum=weak|hour=night|trend=strong|volume=high": {
     "n": 2,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -1.15,
+    "win_rate": 50.0,
+    "avg_pnl_pct": 0.72,
     "reliable": false
   },
-  "volatility=medium|momentum=strong|hour=afternoon|trend=weak|volume=high": {
-    "n": 1,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -2.36,
+  "volatility=low|momentum=weak|hour=night|trend=weak|volume=high": {
+    "n": 3,
+    "win_rate": 33.3,
+    "avg_pnl_pct": -0.03,
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=night|trend=weak|volume=low": {
@@ -281,16 +227,64 @@
     "avg_pnl_pct": -1.28,
     "reliable": false
   },
-  "volatility=medium|momentum=weak|hour=evening|trend=weak|volume=low": {
+  "volatility=medium|momentum=strong|hour=afternoon|trend=strong|volume=high": {
+    "n": 7,
+    "win_rate": 42.9,
+    "avg_pnl_pct": -0.27,
+    "reliable": false
+  },
+  "volatility=medium|momentum=strong|hour=afternoon|trend=weak|volume=high": {
     "n": 1,
     "win_rate": 0.0,
-    "avg_pnl_pct": -0.77,
+    "avg_pnl_pct": -2.36,
+    "reliable": false
+  },
+  "volatility=medium|momentum=strong|hour=evening|trend=strong|volume=high": {
+    "n": 2,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -1.15,
+    "reliable": false
+  },
+  "volatility=medium|momentum=strong|hour=evening|trend=strong|volume=low": {
+    "n": 4,
+    "win_rate": 25.0,
+    "avg_pnl_pct": -0.13,
+    "reliable": false
+  },
+  "volatility=medium|momentum=strong|hour=morning|trend=strong|volume=low": {
+    "n": 4,
+    "win_rate": 25.0,
+    "avg_pnl_pct": -0.91,
+    "reliable": false
+  },
+  "volatility=medium|momentum=strong|hour=night|trend=strong|volume=high": {
+    "n": 1,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 0.7,
+    "reliable": false
+  },
+  "volatility=medium|momentum=strong|hour=night|trend=strong|volume=low": {
+    "n": 2,
+    "win_rate": 50.0,
+    "avg_pnl_pct": 0.67,
     "reliable": false
   },
   "volatility=medium|momentum=weak|hour=afternoon|trend=strong|volume=high": {
     "n": 1,
     "win_rate": 0.0,
     "avg_pnl_pct": -0.8,
+    "reliable": false
+  },
+  "volatility=medium|momentum=weak|hour=afternoon|trend=weak|volume=high": {
+    "n": 7,
+    "win_rate": 14.3,
+    "avg_pnl_pct": 0.09,
+    "reliable": false
+  },
+  "volatility=medium|momentum=weak|hour=evening|trend=weak|volume=low": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -0.77,
     "reliable": false
   },
   "volatility=medium|momentum=weak|hour=morning|trend=strong|volume=low": {
@@ -303,6 +297,12 @@
     "n": 2,
     "win_rate": 0.0,
     "avg_pnl_pct": -1.33,
+    "reliable": false
+  },
+  "volatility=medium|momentum=weak|hour=night|trend=strong|volume=high": {
+    "n": 1,
+    "win_rate": 100.0,
+    "avg_pnl_pct": 7.55,
     "reliable": false
   },
   "volatility=medium|momentum=weak|hour=night|trend=weak|volume=high": {

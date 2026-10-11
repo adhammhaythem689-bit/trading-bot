@@ -1,10 +1,14 @@
 """
-Step 10: periodic re-learning.
+Step 10: periodic re-learning -- built on the shared engine.
 
-Runs the self-analysis (07) and adaptive validation (08) automatically on a
-schedule, and appends a dated row to relearn_history.csv tracking:
+Previously this ran 07/08 as subprocesses and parsed their printed text
+output with regex to extract numbers, which is fragile (any wording change
+silently breaks it). Now it calls the engine functions directly and reads
+structured results, no text parsing involved.
+
+Appends a dated row to relearn_history.csv tracking:
   - how many condition combinations exist
-  - how many are "reliable" (n >= MIN_SAMPLES)
+  - how many are "reliable" (n >= config.min_samples)
   - whether the filter helped or hurt on unseen data that run
 
 This is how we honestly track progress toward "the self-learning system has
@@ -15,49 +19,65 @@ Usage:
     python 10_auto_relearn.py            # run forever, re-check once per day
     python 10_auto_relearn.py --once      # run one time now and exit
 """
-import subprocess
-import re
 import csv
 import os
 import sys
 import time
+import json
 from datetime import datetime, timezone
 
+from engine.config import DEFAULT_CONFIG
+from engine.data import load_ohlcv_csv
+from engine.features import prepare
+from engine.learning import label_trades_with_conditions, learn_filters
+from engine.backtest import run_backtest
+from engine.metrics import compute_metrics
+
 HISTORY_FILE = "relearn_history.csv"
+LEARNED_FILTERS_FILE = "learned_filters.json"
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60  # once per day
-
-
-def run_and_capture(script):
-    result = subprocess.run([sys.executable, script], capture_output=True, text=True)
-    return result.stdout + result.stderr
-
-
-def parse_results(analyze_output, adaptive_output):
-    total_combos = re.search(r"(\d+) of (\d+) combinations have enough trades", analyze_output)
-    reliable_n = int(total_combos.group(1)) if total_combos else None
-    total_n = int(total_combos.group(2)) if total_combos else None
-
-    total_trades_match = re.search(r"Total trades analyzed: (\d+)", analyze_output)
-    total_trades = int(total_trades_match.group(1)) if total_trades_match else None
-
-    improved = "IMPROVED" in adaptive_output
-    no_change = "did NOT improve" in adaptive_output and "8.73% vs 8.73%" not in adaptive_output
-
-    return {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "total_trades": total_trades,
-        "reliable_combos": reliable_n,
-        "total_combos": total_n,
-        "filter_helped_on_test": improved,
-    }
 
 
 def run_once():
     print(f"[{datetime.now(timezone.utc).isoformat()}] Re-running self-analysis...")
-    analyze_output = run_and_capture("07_analyze_trades.py")
-    adaptive_output = run_and_capture("08_adaptive_backtest.py")
+    config = DEFAULT_CONFIG
+    df_full, warnings = load_ohlcv_csv("btc_usdt_1h.csv")
+    for w in warnings:
+        print(f"  Data quality warning: {w}")
 
-    row = parse_results(analyze_output, adaptive_output)
+    split_idx = int(len(df_full) * 0.75)
+    train_df = df_full.iloc[:split_idx].reset_index(drop=True)
+    test_df = df_full.iloc[split_idx:].reset_index(drop=True)
+
+    train_prepared = prepare(train_df, config)
+    test_prepared = prepare(test_df, config)
+
+    labeled, bins = label_trades_with_conditions(train_prepared, config)
+    learned_filters = learn_filters(labeled, config.min_samples)
+    reliable_count = sum(1 for v in learned_filters.values() if v["reliable"])
+
+    baseline = compute_metrics(run_backtest(test_prepared, config), config.starting_balance)
+    adaptive = compute_metrics(run_backtest(test_prepared, config, learned_filters=learned_filters, bins=bins),
+                                config.starting_balance)
+    filter_helped = adaptive["return_pct"] > baseline["return_pct"]
+
+    # also compute on the FULL dataset (not just training split) for the saved lookup table,
+    # since this is what 06_paper_trade.py actually loads and uses
+    full_prepared = prepare(df_full, config)
+    full_labeled, full_bins = label_trades_with_conditions(full_prepared, config)
+    full_filters = learn_filters(full_labeled, config.min_samples)
+    with open(LEARNED_FILTERS_FILE, "w") as f:
+        json.dump(full_filters, f, indent=2)
+
+    row = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "total_trades": len(labeled),
+        "reliable_combos": reliable_count,
+        "total_combos": len(learned_filters),
+        "filter_helped_on_test": filter_helped,
+        "baseline_return_pct": round(baseline["return_pct"], 2),
+        "adaptive_return_pct": round(adaptive["return_pct"], 2),
+    }
     print(f"  Total trades: {row['total_trades']}, reliable combos: {row['reliable_combos']}/{row['total_combos']}, "
           f"filter helped on test data: {row['filter_helped_on_test']}")
 
