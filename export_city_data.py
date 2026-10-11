@@ -80,7 +80,7 @@ def build_backtest_department():
             "profit_factor": round(metrics["profit_factor"], 2) if metrics["profit_factor"] != float("inf") else "inf",
         },
         "buy_and_hold_pct": round(buy_hold, 2),
-        "beat_buy_and_hold": metrics["return_pct"] > buy_hold,
+        "beat_buy_and_hold": bool(metrics["return_pct"] > buy_hold),
         "equity_sparkline": [round(v, 2) for v in sparkline],
     }
 

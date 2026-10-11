@@ -1,40 +1,44 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Stars } from "@react-three/drei";
-import * as THREE from "three";
-import { DEPARTMENTS } from "./departments";
+import { BUILDINGS, EMPLOYEES, employeePosition } from "./employees";
 import { getGridTexture, seededRandom } from "./textures";
+import { StandingPerson } from "./People";
 
 function Windows({ height, width, depth, color, seed }) {
-  const rand = useMemo(() => seededRandom(seed), [seed]);
-  const rows = Math.max(2, Math.floor(height * 2.2));
   const windows = useMemo(() => {
+    const rand = seededRandom(seed);
+    const rows = Math.max(2, Math.floor(height * 2.2));
     const out = [];
     for (let r = 0; r < rows; r++) {
       for (let side = 0; side < 4; side++) {
-        if (rand() > 0.45) continue; // sparse, not every cell lit
-        const lit = rand() > 0.3;
-        const y = (r + 0.5) * (height / rows) - height / 2 + 0.15;
-        let pos, rot;
-        if (side === 0) { pos = [0, y, depth / 2 + 0.01]; rot = [0, 0, 0]; }
-        else if (side === 1) { pos = [0, y, -depth / 2 - 0.01]; rot = [0, Math.PI, 0]; }
-        else if (side === 2) { pos = [width / 2 + 0.01, y, 0]; rot = [0, Math.PI / 2, 0]; }
-        else { pos = [-width / 2 - 0.01, y, 0]; rot = [0, -Math.PI / 2, 0]; }
-        out.push({ pos, rot, lit, key: `${r}-${side}` });
+        for (let col = -1; col <= 1; col += 2) {
+          if (rand() > 0.55) continue;
+          const lit = rand() > 0.35;
+          const y = (r + 0.5) * (height / rows) - height / 2;
+          const c = col * 0.32;
+          let pos, rot;
+          if (side === 0) { pos = [c, y, depth / 2 + 0.01]; rot = [0, 0, 0]; }
+          else if (side === 1) { pos = [c, y, -depth / 2 - 0.01]; rot = [0, Math.PI, 0]; }
+          else if (side === 2) { pos = [width / 2 + 0.01, y, c]; rot = [0, Math.PI / 2, 0]; }
+          else { pos = [-width / 2 - 0.01, y, c]; rot = [0, -Math.PI / 2, 0]; }
+          out.push({ pos, rot, lit, key: `${r}-${side}-${col}` });
+        }
       }
     }
     return out;
-  }, [rows, height, width, depth, rand]);
+  }, [height, width, depth, seed]);
 
+  // windows are laid out around the tower's center, so the group sits at the center
   return (
-    <group>
+    <group position={[0, height / 2 + 0.2, 0]}>
       {windows.map((w) => (
         <mesh key={w.key} position={w.pos} rotation={w.rot}>
-          <planeGeometry args={[0.18, 0.12]} />
+          <planeGeometry args={[0.2, 0.13]} />
           <meshStandardMaterial
             color={w.lit ? color : "#1f2937"}
             emissive={w.lit ? color : "#000000"}
-            emissiveIntensity={w.lit ? 1.4 : 0}
+            emissiveIntensity={w.lit ? 1.2 : 0}
             toneMapped={false}
           />
         </mesh>
@@ -43,83 +47,65 @@ function Windows({ height, width, depth, color, seed }) {
   );
 }
 
-function Building({ dept, onSelect, selected }) {
-  const planned = dept.plannedOnly;
-  const w = 1.4, d = 1.4, h = dept.height;
+function Building({ building, onSelect, selected, busy }) {
+  const planned = building.plannedOnly;
+  const w = 1.4, d = 1.4, h = building.height;
   const beaconRef = useRef();
 
   useFrame((state) => {
     if (beaconRef.current) {
-      const pulse = 0.6 + Math.sin(state.clock.elapsedTime * 2) * 0.4;
-      beaconRef.current.material.emissiveIntensity = planned ? 0.15 : pulse;
+      const speed = busy ? 8 : 2;
+      const pulse = 0.6 + Math.sin(state.clock.elapsedTime * speed) * 0.4;
+      beaconRef.current.material.emissiveIntensity = planned ? 0.15 : pulse * (busy ? 2 : 1);
     }
   });
 
+  const click = (e) => { e.stopPropagation(); onSelect(); };
+
   return (
-    <group position={dept.position}>
-      {/* glowing footprint ring */}
+    <group position={building.position}>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.015, 0]}>
         <ringGeometry args={[1.15, 1.3, 48]} />
-        <meshBasicMaterial color={dept.color} transparent opacity={planned ? 0.15 : 0.45} />
+        <meshBasicMaterial color={building.color} transparent opacity={planned ? 0.12 : busy ? 0.9 : 0.4} />
       </mesh>
-
-      {/* foundation platform */}
-      <mesh position={[0, 0.1, 0]} onClick={(e) => { e.stopPropagation(); onSelect(dept.id); }}>
+      <mesh position={[0, 0.1, 0]} onClick={click}>
         <boxGeometry args={[w + 0.3, 0.2, d + 0.3]} />
         <meshStandardMaterial color="#1f2937" roughness={0.6} metalness={0.3} />
       </mesh>
-
-      {/* main tower */}
-      <mesh
-        position={[0, h / 2 + 0.2, 0]}
-        onClick={(e) => { e.stopPropagation(); onSelect(dept.id); }}
-        castShadow
-      >
+      <mesh position={[0, h / 2 + 0.2, 0]} onClick={click} castShadow>
         <boxGeometry args={[w, h, d]} />
         <meshStandardMaterial
           color={planned ? "#1f2937" : "#2a3550"}
-          emissive={selected ? dept.color : "#000000"}
-          emissiveIntensity={selected ? 0.35 : 0}
+          emissive={selected ? building.color : "#000000"}
+          emissiveIntensity={selected ? 0.3 : 0}
           roughness={0.5}
           metalness={0.15}
-          opacity={planned ? 0.55 : 1}
+          opacity={planned ? 0.5 : 1}
           transparent={planned}
         />
       </mesh>
-
-      {/* upper setback tier, gives the tower a more designed silhouette */}
-      <mesh position={[0, h + 0.5, 0]} castShadow>
+      <mesh position={[0, h + 0.45, 0]} onClick={click} castShadow>
         <boxGeometry args={[w * 0.65, 0.5, d * 0.65]} />
-        <meshStandardMaterial
-          color={planned ? "#1f2937" : "#334066"}
-          roughness={0.4}
-          metalness={0.2}
-          opacity={planned ? 0.55 : 1}
-          transparent={planned}
-        />
+        <meshStandardMaterial color={planned ? "#1f2937" : "#334066"} roughness={0.4} metalness={0.2}
+          opacity={planned ? 0.5 : 1} transparent={planned} />
       </mesh>
-
-      {!planned && <Windows height={h} width={w} depth={d} color={dept.color} seed={dept.seed} />}
-
-      {/* vertical accent edge lights */}
+      {!planned && <Windows height={h} width={w} depth={d} color={building.color} seed={building.seed} />}
       {!planned && [[-w / 2, -d / 2], [w / 2, -d / 2], [-w / 2, d / 2], [w / 2, d / 2]].map(([x, z], i) => (
         <mesh key={i} position={[x, h / 2 + 0.2, z]}>
           <boxGeometry args={[0.04, h, 0.04]} />
-          <meshStandardMaterial color={dept.color} emissive={dept.color} emissiveIntensity={0.8} toneMapped={false} />
+          <meshStandardMaterial color={building.color} emissive={building.color} emissiveIntensity={0.8} toneMapped={false} />
         </mesh>
       ))}
-
-      {/* rooftop beacon */}
-      <mesh ref={beaconRef} position={[0, h + 0.85, 0]}>
+      <mesh ref={beaconRef} position={[0, h + 0.8, 0]}>
         <sphereGeometry args={[0.08, 12, 12]} />
-        <meshStandardMaterial color={dept.color} emissive={dept.color} emissiveIntensity={0.6} toneMapped={false} />
+        <meshStandardMaterial color={building.color} emissive={building.color} emissiveIntensity={0.6} toneMapped={false} />
       </mesh>
-
-      <Text position={[0, h + 1.25, 0]} fontSize={0.2} color="#e5e7eb" anchorX="center" anchorY="bottom" outlineWidth={0.012} outlineColor="#0b0e14">
-        {dept.name}
+      <Text position={[0, h + 1.15, 0]} fontSize={0.2} color="#e5e7eb" anchorX="center" anchorY="bottom"
+        outlineWidth={0.012} outlineColor="#0b0e14">
+        {building.name}
       </Text>
       {planned && (
-        <Text position={[0, h + 1.0, 0]} fontSize={0.13} color="#9ca3af" anchorX="center">
+        <Text position={[0, h + 0.95, 0]} fontSize={0.13} color="#9ca3af" anchorX="center">
           NOT IMPLEMENTED
         </Text>
       )}
@@ -127,128 +113,106 @@ function Building({ dept, onSelect, selected }) {
   );
 }
 
-function Bot({ dept, onSelect, selected, status }) {
-  const groupRef = useRef();
-  const visorRef = useRef();
-  const phase = useMemo(() => Math.random() * Math.PI * 2, []);
-  const isActive = status === "running" || status === "complete";
-  const isHalted = status === "halted";
-
+// During a replay, a glowing packet carries the work from one employee to the next.
+// The order is the real pipeline order from the run log.
+function HandOffPacket({ from, to, stepKey, color }) {
+  const ref = useRef();
+  const startRef = useRef({ key: null, t: 0 });
   useFrame((state) => {
-    if (!groupRef.current) return;
-    const t = state.clock.elapsedTime + phase;
-    groupRef.current.position.y = Math.sin(t * 2) * 0.03;
-    if (isActive) groupRef.current.rotation.y = Math.sin(t * 0.6) * 0.5;
-    if (visorRef.current) {
-      const blink = isHalted ? 0.5 + Math.sin(t * 6) * 0.5 : 0.9;
-      visorRef.current.material.emissiveIntensity = blink * 1.5;
-    }
+    if (!ref.current) return;
+    if (startRef.current.key !== stepKey) startRef.current = { key: stepKey, t: state.clock.elapsedTime };
+    const p = Math.min(1, (state.clock.elapsedTime - startRef.current.t) / 0.7);
+    const ease = p * p * (3 - 2 * p);
+    const a = from || to;
+    ref.current.position.set(
+      a[0] + (to[0] - a[0]) * ease,
+      1.3 + Math.sin(ease * Math.PI) * 0.8,
+      a[2] + (to[2] - a[2]) * ease,
+    );
   });
-
-  const bodyColor = status === "idle" || status === "not_implemented" ? "#374151" : "#1a2234";
-  const accentColor = isHalted ? "#ef4444" : dept.color;
-
   return (
-    <group position={[dept.position[0], 0, dept.position[2] + 1.3]}>
-      <group ref={groupRef} position={[0, 0.5, 0]} onClick={(e) => { e.stopPropagation(); onSelect(dept.id); }}>
-        {/* legs */}
-        <mesh position={[-0.08, -0.32, 0]}><boxGeometry args={[0.07, 0.25, 0.07]} /><meshStandardMaterial color={bodyColor} metalness={0.2} roughness={0.5} /></mesh>
-        <mesh position={[0.08, -0.32, 0]}><boxGeometry args={[0.07, 0.25, 0.07]} /><meshStandardMaterial color={bodyColor} metalness={0.2} roughness={0.5} /></mesh>
-
-        {/* torso */}
-        <mesh position={[0, -0.05, 0]}>
-          <boxGeometry args={[0.26, 0.32, 0.18]} />
-          <meshStandardMaterial color={bodyColor} metalness={0.25} roughness={0.4} />
-        </mesh>
-        <mesh position={[0, -0.05, 0.091]}>
-          <boxGeometry args={[0.14, 0.14, 0.01]} />
-          <meshStandardMaterial color={accentColor} emissive={accentColor} emissiveIntensity={0.7} toneMapped={false} />
-        </mesh>
-
-        {/* head */}
-        <mesh position={[0, 0.2, 0]}>
-          <boxGeometry args={[0.17, 0.15, 0.15]} />
-          <meshStandardMaterial color={bodyColor} metalness={0.25} roughness={0.35} />
-        </mesh>
-        <mesh ref={visorRef} position={[0, 0.2, 0.076]}>
-          <boxGeometry args={[0.12, 0.04, 0.01]} />
-          <meshStandardMaterial color={accentColor} emissive={accentColor} emissiveIntensity={1.2} toneMapped={false} />
-        </mesh>
-
-        {/* antenna */}
-        <mesh position={[0, 0.32, 0]}>
-          <cylinderGeometry args={[0.008, 0.008, 0.1, 6]} />
-          <meshStandardMaterial color="#6b7280" metalness={0.8} />
-        </mesh>
-        <mesh position={[0, 0.38, 0]}>
-          <sphereGeometry args={[0.018, 8, 8]} />
-          <meshStandardMaterial color={accentColor} emissive={accentColor} emissiveIntensity={1} toneMapped={false} />
-        </mesh>
-      </group>
-
-      <pointLight position={[0, 0.5, 0]} color={accentColor} intensity={selected ? 0.8 : 0.25} distance={2} />
-
-      {selected && (
-        <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.32, 0.4, 32]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-      )}
-    </group>
-  );
-}
-
-function Ground() {
-  const texture = useMemo(() => getGridTexture(), []);
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-      <planeGeometry args={[30, 20]} />
-      <meshStandardMaterial map={texture} color="#2a3550" roughness={0.9} />
+    <mesh ref={ref}>
+      <sphereGeometry args={[0.09, 16, 16]} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} toneMapped={false} />
+      <pointLight color={color} intensity={1} distance={2.5} />
     </mesh>
   );
 }
 
-export default function CityScene({ cityData, selectedId, onSelect }) {
-  const departments = cityData ? cityData.departments : {};
+function Ground({ onClick }) {
+  const texture = useMemo(() => getGridTexture(), []);
+  return (
+    <>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow onClick={onClick}>
+        <planeGeometry args={[34, 20]} />
+        <meshStandardMaterial map={texture} color="#2a3550" roughness={0.9} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+        <planeGeometry args={[20, 1.4]} />
+        <meshStandardMaterial color="#141b2e" roughness={0.6} />
+      </mesh>
+      {[-5.25, -1.75, 1.75, 5.25].map((x) => (
+        <mesh key={x} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0.01, 0]}>
+          <planeGeometry args={[0.8, 12]} />
+          <meshStandardMaterial color="#141b2e" roughness={0.6} />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
+export default function CityScene({ statuses, selection, onSelect, replayStep, previousReplayStep }) {
+  const activeEmployeeId = replayStep ? replayStep.employee : null;
+  const activeEmployee = EMPLOYEES.find((e) => e.id === activeEmployeeId);
+  const previousEmployee = previousReplayStep ? EMPLOYEES.find((e) => e.id === previousReplayStep.employee) : null;
 
   return (
     <>
       <color attach="background" args={["#060810"]} />
-      <fog attach="fog" args={["#060810", 16, 32]} />
+      <fog attach="fog" args={["#060810", 20, 40]} />
       <hemisphereLight args={["#2d4a7a", "#0b0e14", 0.9]} />
       <ambientLight intensity={0.5} />
-      <directionalLight position={[8, 12, 6]} intensity={1.6} color="#cfe8ff" castShadow />
-      <pointLight position={[0, 5, -1]} intensity={0.6} color="#38bdf8" />
-      <Stars radius={40} depth={20} count={1200} factor={2} saturation={0} fade speed={0.3} />
+      <directionalLight position={[8, 14, 8]} intensity={1.6} color="#cfe8ff" castShadow />
+      <Stars radius={50} depth={20} count={1500} factor={2} saturation={0} fade speed={0.3} />
 
-      <Ground />
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} onClick={() => onSelect(null)}>
-        <planeGeometry args={[30, 20]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
+      <Ground onClick={() => onSelect(null)} />
 
-      {/* road */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, -1]}>
-        <planeGeometry args={[18, 1.2]} />
-        <meshStandardMaterial color="#141b2e" roughness={0.6} />
-      </mesh>
+      {BUILDINGS.map((b) => (
+        <Building
+          key={b.id}
+          building={b}
+          selected={selection?.type === "building" && selection.id === b.id}
+          busy={activeEmployee?.building === b.id}
+          onSelect={() => onSelect({ type: "building", id: b.id })}
+        />
+      ))}
 
-      {DEPARTMENTS.map((dept) => {
-        const deptData = departments[dept.id] || { status: "idle" };
+      {EMPLOYEES.map((e) => {
+        const building = BUILDINGS.find((b) => b.id === e.building);
         return (
-          <group key={dept.id}>
-            <Building dept={dept} onSelect={onSelect} selected={selectedId === dept.id} />
-            <Bot dept={dept} onSelect={onSelect} selected={selectedId === dept.id} status={deptData.status} />
-          </group>
+          <StandingPerson
+            key={e.id}
+            employee={e}
+            color={building.color}
+            status={statuses[e.id]}
+            position={employeePosition(e)}
+            selected={selection?.type === "employee" && selection.id === e.id}
+            active={activeEmployeeId === e.id}
+            onClick={() => onSelect({ type: "employee", id: e.id })}
+          />
         );
       })}
 
-      <OrbitControls
-        minDistance={4}
-        maxDistance={22}
-        maxPolarAngle={Math.PI / 2.1}
-        target={[0, 0.5, 0]}
-      />
+      {activeEmployee && (
+        <HandOffPacket
+          stepKey={replayStep.step}
+          from={previousEmployee ? employeePosition(previousEmployee) : null}
+          to={employeePosition(activeEmployee)}
+          color={BUILDINGS.find((b) => b.id === activeEmployee.building).color}
+        />
+      )}
+
+      <OrbitControls minDistance={4} maxDistance={30} maxPolarAngle={Math.PI / 2.1} target={[0, 0.5, 0]} />
     </>
   );
 }

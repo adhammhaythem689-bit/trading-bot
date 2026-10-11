@@ -1,0 +1,167 @@
+{
+  "run_type": "hourly",
+  "run_id": "hourly-20261011T161345Z",
+  "started_at": "2026-10-11T16:13:45.233911+00:00",
+  "finished_at": "2026-10-11T16:13:49.489874+00:00",
+  "status": "done",
+  "summary": "hold",
+  "trigger": "local",
+  "steps": [
+    {
+      "step": "fetch_prices",
+      "employee": "price_fetcher",
+      "description": "Pull the latest hourly BTC/USD candles from Kraken",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:45.233911+00:00",
+      "finished_at": "2026-10-11T16:13:47.646446+00:00",
+      "duration_ms": 2412,
+      "outputs": {
+        "source": "Kraken BTC/USD",
+        "candles": 82,
+        "latest_candle": "2026-10-11 16:00:00",
+        "latest_close": 83757.7
+      },
+      "error": null
+    },
+    {
+      "step": "check_data",
+      "employee": "data_checker",
+      "description": "Check the candles for gaps, duplicates and bad prices",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:47.646446+00:00",
+      "finished_at": "2026-10-11T16:13:47.650450+00:00",
+      "duration_ms": 4,
+      "outputs": {
+        "rows_checked": 82,
+        "warnings": [],
+        "verdict": "clean"
+      },
+      "error": null
+    },
+    {
+      "step": "compute_indicators",
+      "employee": "indicator_analyst",
+      "description": "Compute the 24h and 72h moving averages",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:47.650450+00:00",
+      "finished_at": "2026-10-11T16:13:47.661984+00:00",
+      "duration_ms": 11,
+      "outputs": {
+        "candle": "2026-10-11 16:00:00",
+        "close": 83757.7,
+        "short_ma": 83037.54,
+        "long_ma": 82636.29,
+        "gap_pct": 0.486,
+        "windows": "24h / 72h"
+      },
+      "error": null
+    },
+    {
+      "step": "check_signal",
+      "employee": "signal_watcher",
+      "description": "Check whether the averages crossed this hour",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:47.661984+00:00",
+      "finished_at": "2026-10-11T16:13:47.661984+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "crossover": "none",
+        "trend": "24h above 72h",
+        "what_it_means": "Trend is up, but the bot only buys in the hour the cross happens, so it waits"
+      },
+      "error": null
+    },
+    {
+      "step": "check_risk",
+      "employee": "risk_officer",
+      "description": "Check drawdown against the kill switch and the stop-loss",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:47.661984+00:00",
+      "finished_at": "2026-10-11T16:13:47.661984+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "equity": 1000.0,
+        "peak_equity": 1000.0,
+        "drawdown_pct": 0.0,
+        "kill_switch_at_pct": -20.0,
+        "trading_halted": false,
+        "position": "flat, no stop-loss to watch"
+      },
+      "error": null
+    },
+    {
+      "step": "read_news",
+      "employee": "news_reader",
+      "description": "Read crypto headlines and score their sentiment",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:47.661984+00:00",
+      "finished_at": "2026-10-11T16:13:48.172366+00:00",
+      "duration_ms": 510,
+      "outputs": {
+        "headlines": 40,
+        "sentiment": "neutral",
+        "score": -0.0669,
+        "sample": [
+          "Clarity's failure could speed crypto innovation while shielding incumbents",
+          "President Trump declares 'energy ceasefire' between Russia and Ukraine",
+          "IMF finds demand for tokenized stocks, says the market is still volatile, illiquid"
+        ],
+        "feeds_failed": [],
+        "used_for_decisions": "no, logged for future research only"
+      },
+      "error": null
+    },
+    {
+      "step": "read_mood",
+      "employee": "mood_analyst",
+      "description": "Read the Crypto Fear & Greed index",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:48.172366+00:00",
+      "finished_at": "2026-10-11T16:13:49.484329+00:00",
+      "duration_ms": 1311,
+      "outputs": {
+        "value": 61,
+        "label": "Greed",
+        "used_for_decisions": "no, logged for future research only"
+      },
+      "error": null
+    },
+    {
+      "step": "decide_trade",
+      "employee": "trader",
+      "description": "Decide buy / sell / hold and update the paper portfolio",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:49.484329+00:00",
+      "finished_at": "2026-10-11T16:13:49.485323+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "decision": "hold",
+        "price": 83757.7,
+        "cash_before": 1000.0,
+        "cash_after": 1000.0,
+        "btc_after": 0.0,
+        "equity": 1000.0,
+        "in_position": false
+      },
+      "error": null
+    },
+    {
+      "step": "save_state",
+      "employee": "record_keeper",
+      "description": "Save the portfolio and logs for GitHub to commit",
+      "status": "done",
+      "started_at": "2026-10-11T16:13:49.485323+00:00",
+      "finished_at": "2026-10-11T16:13:49.489874+00:00",
+      "duration_ms": 4,
+      "outputs": {
+        "files": [
+          "paper_state.json",
+          "paper_trade_log.csv",
+          "market_context_log.csv"
+        ],
+        "pushed_by": "GitHub Actions, right after this run"
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "run_type": "daily",
+  "run_id": "daily-20261011T160654Z",
+  "started_at": "2026-10-11T16:06:54.973577+00:00",
+  "finished_at": "2026-10-11T16:06:57.023846+00:00",
+  "status": "done",
+  "summary": "0/47 patterns trusted, filter helped: False",
+  "trigger": "local",
+  "steps": [
+    {
+      "step": "load_history",
+      "employee": "historian",
+      "description": "Load the stored 2-year BTC price history and check its quality",
+      "status": "done",
+      "started_at": "2026-10-11T16:06:54.973577+00:00",
+      "finished_at": "2026-10-11T16:06:55.019487+00:00",
+      "duration_ms": 45,
+      "outputs": {
+        "candles": 17520,
+        "first_candle": "2024-10-11 11:00:00",
+        "last_candle": "2026-10-11 10:00:00",
+        "warnings": [],
+        "note": "This file is not refreshed on a schedule, it only grows when 01_fetch_data.py is run"
+      },
+      "error": null
+    },
+    {
+      "step": "find_patterns",
+      "employee": "pattern_researcher",
+      "description": "Tag past trades by market conditions and count trustworthy patterns",
+      "status": "done",
+      "started_at": "2026-10-11T16:06:55.019487+00:00",
+      "finished_at": "2026-10-11T16:06:55.692610+00:00",
+      "duration_ms": 673,
+      "outputs": {
+        "training_period": "2024-10-11 11:00:00 to 2026-04-11 22:00:00",
+        "trades_tagged": 106,
+        "patterns_found": 47,
+        "reliable_patterns": 0,
+        "trades_needed_per_pattern": 30,
+        "most_common": [
+          "volatility=medium|momentum=weak|hour=afternoon|trend=weak|volume=high (n=8, win 12.5%)",
+          "volatility=high|momentum=strong|hour=evening|trend=strong|volume=low (n=7, win 14.3%)",
+          "volatility=high|momentum=strong|hour=night|trend=strong|volume=low (n=7, win 28.6%)"
+        ]
+      },
+      "error": null
+    },
+    {
+      "step": "validate_filter",
+      "employee": "validator",
+      "description": "Test whether the pattern filter helps on data it never saw",
+      "status": "done",
+      "started_at": "2026-10-11T16:06:55.692610+00:00",
+      "finished_at": "2026-10-11T16:06:56.155525+00:00",
+      "duration_ms": 462,
+      "outputs": {
+        "test_period": "2026-04-11 23:00:00 to 2026-10-11 10:00:00",
+        "without_filter_return_pct": 8.73,
+        "with_filter_return_pct": 8.73,
+        "trades_skipped_by_filter": 0,
+        "verdict": "no difference, no pattern is trusted yet"
+      },
+      "error": null
+    },
+    {
+      "step": "save_filters",
+      "employee": "pattern_researcher",
+      "description": "Save the pattern table the hourly trader reads",
+      "status": "done",
+      "started_at": "2026-10-11T16:06:56.155525+00:00",
+      "finished_at": "2026-10-11T16:06:57.021883+00:00",
+      "duration_ms": 866,
+      "outputs": {
+        "file": "learned_filters.json",
+        "patterns_saved": 53,
+        "reliable_saved": 0
+      },
+      "error": null
+    }
+  ]
+}

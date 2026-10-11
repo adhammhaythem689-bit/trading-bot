@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-11T15:32:47.596296+00:00",
+  "generated_at": "2026-10-11T16:17:45.598488+00:00",
   "mode": "real",
   "departments": {
     "data_collection": {
@@ -29,7 +29,7 @@
         "profit_factor": 1.7
       },
       "buy_and_hold_pct": 27.94,
-      "beat_buy_and_hold": "False",
+      "beat_buy_and_hold": false,
       "equity_sparkline": [
         999.33,
         1020.89,
@@ -107,7 +107,7 @@
       "btc": 0.0,
       "in_position": false,
       "trading_halted": false,
-      "last_candle_ts": "2026-10-11 14:00:00",
+      "last_candle_ts": "2026-10-11 15:00:00",
       "recent_log": [
         {
           "timestamp": "2026-10-11 10:00:00",
@@ -149,6 +149,15 @@
           "timestamp": "2026-10-11 14:00:00",
           "event": "tick",
           "price": 83009.0,
+          "cash": 1000.0,
+          "btc": 0.0,
+          "equity": 1000.0,
+          "note": "hold | news=neutral fear_greed=61"
+        },
+        {
+          "timestamp": "2026-10-11 15:00:00",
+          "event": "tick",
+          "price": 83043.4,
           "cash": 1000.0,
           "btc": 0.0,
           "equity": 1000.0,
