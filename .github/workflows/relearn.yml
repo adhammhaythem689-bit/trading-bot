@@ -1,0 +1,33 @@
+name: Daily self-analysis re-learn
+
+on:
+  schedule:
+    - cron: "15 0 * * *"  # once a day at 00:15 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  relearn:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the self-analysis + adaptive validation once
+        run: python 10_auto_relearn.py --once
+
+      - name: Commit updated learning artifacts
+        run: |
+          git config user.name "trading-bot-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add learned_filters.json trades_with_conditions.csv relearn_history.csv
+          git diff --quiet --cached || git commit -m "Daily re-learn $(date -u +%Y-%m-%d)"
+          git push

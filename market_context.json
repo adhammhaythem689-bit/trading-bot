@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-11T10:32:32.760202+00:00",
+  "news": {
+    "headline_count": 40,
+    "avg_compound": -0.0587,
+    "label": "neutral",
+    "sample": [
+      "One year after 10/10 flash crash, bitcoin and ether liquidity have rebuilt, but altcoins still face risks",
+      "Tokenized commodities look beyond gold as lending and oil open new markets",
+      "Bitcoin's $19 billion wake-up call: One-year after flash crash, has crypto learned anything?",
+      "Bitcoin's volatility has plunged, but extreme price swings are more frequent than in 2018",
+      "Robinhood Chain slowdown spreads from fees to trading as transactions fall more than 40%"
+    ]
+  },
+  "fear_greed": {
+    "value": 61,
+    "label": "Greed"
+  }
+}
