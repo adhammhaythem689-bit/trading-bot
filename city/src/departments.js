@@ -1,5 +1,6 @@
-// Static layout + metadata for each department building/bot. Positions are
-// the only "made up" values here, everything else comes from city_data.json.
+// Static layout + metadata for each department building/bot. Positions,
+// heights, and window seeds are the only "made up" values here, everything
+// shown in the inspector panels comes from city_data.json.
 export const DEPARTMENTS = [
   {
     id: "data_collection",
@@ -7,6 +8,8 @@ export const DEPARTMENTS = [
     role: "Data Collection",
     color: "#38bdf8",
     position: [-6, 0, -4],
+    height: 2.4,
+    seed: 11,
   },
   {
     id: "backtesting",
@@ -14,6 +17,8 @@ export const DEPARTMENTS = [
     role: "Backtesting",
     color: "#34d399",
     position: [-2, 0, -4],
+    height: 3.2,
+    seed: 22,
   },
   {
     id: "validation",
@@ -21,6 +26,8 @@ export const DEPARTMENTS = [
     role: "Validation & Risk",
     color: "#fbbf24",
     position: [2, 0, -4],
+    height: 2.8,
+    seed: 33,
   },
   {
     id: "self_learning",
@@ -28,6 +35,8 @@ export const DEPARTMENTS = [
     role: "Self-Learning Analysis",
     color: "#a78bfa",
     position: [6, 0, -4],
+    height: 2.6,
+    seed: 44,
   },
   {
     id: "operations",
@@ -35,6 +44,8 @@ export const DEPARTMENTS = [
     role: "Paper-Trading Operations",
     color: "#f472b6",
     position: [0, 0, 2],
+    height: 3.6,
+    seed: 55,
   },
   {
     id: "strategy_discovery",
@@ -42,6 +53,8 @@ export const DEPARTMENTS = [
     role: "Strategy Discovery",
     color: "#6b7280",
     position: [-4, 0, 5],
+    height: 2.2,
+    seed: 66,
     plannedOnly: true,
   },
   {
@@ -50,6 +63,8 @@ export const DEPARTMENTS = [
     role: "Machine Learning",
     color: "#6b7280",
     position: [4, 0, 5],
+    height: 2.2,
+    seed: 77,
     plannedOnly: true,
   },
 ];
