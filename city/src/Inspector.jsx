@@ -148,7 +148,7 @@ const PANELS = {
   machine_learning: NotImplementedPanel,
 };
 
-export default function Inspector({ selectedId, cityData, onClose }) {
+export default function Inspector({ selectedId, cityData, onClose, onEnterRoom }) {
   if (!selectedId) return null;
   const dept = DEPARTMENTS.find((d) => d.id === selectedId);
   const data = (cityData && cityData.departments[selectedId]) || {};
@@ -173,6 +173,18 @@ export default function Inspector({ selectedId, cityData, onClose }) {
         <StatusPill status={data.status} />
       </div>
       <Panel data={data} />
+      {onEnterRoom && (
+        <button
+          onClick={() => onEnterRoom(selectedId)}
+          style={{
+            marginTop: 14, width: "100%", padding: "8px 0", background: dept.color,
+            color: "#0b0e14", border: "none", borderRadius: 6, fontWeight: 700,
+            fontSize: 13, cursor: "pointer",
+          }}
+        >
+          Enter workstation →
+        </button>
+      )}
     </div>
   );
 }

@@ -38,6 +38,14 @@ describe("Inspector", () => {
     expect(screen.getByText(/No ML models trained yet/i)).toBeInTheDocument();
   });
 
+  it("offers an enter-workstation action that reports the selected department", () => {
+    let entered = null;
+    const cityData = { departments: { backtesting: { status: "complete" } } };
+    render(<Inspector selectedId="backtesting" cityData={cityData} onClose={() => {}} onEnterRoom={(id) => { entered = id; }} />);
+    fireEvent.click(screen.getByText(/Enter workstation/i));
+    expect(entered).toBe("backtesting");
+  });
+
   it("calls onClose when the close button is clicked", () => {
     let closed = false;
     const cityData = { departments: { operations: { status: "running" } } };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import CityScene from "./CityScene";
 import Inspector from "./Inspector";
+import RoomView from "./RoomView";
 import { DEPARTMENTS } from "./departments";
 import { isSnapshotStale } from "./utils";
 
@@ -27,6 +28,7 @@ function useCityData() {
 export default function App() {
   const { data, error } = useCityData();
   const [selectedId, setSelectedId] = useState(null);
+  const [roomId, setRoomId] = useState(null);
 
   const isStale = data && isSnapshotStale(data.generated_at, STALE_MINUTES);
 
@@ -70,7 +72,9 @@ export default function App() {
         <CityScene cityData={data} selectedId={selectedId} onSelect={setSelectedId} />
       </Canvas>
 
-      <Inspector selectedId={selectedId} cityData={data} onClose={() => setSelectedId(null)} />
+      <Inspector selectedId={selectedId} cityData={data} onClose={() => setSelectedId(null)} onEnterRoom={setRoomId} />
+
+      {roomId && <RoomView deptId={roomId} cityData={data} onBack={() => setRoomId(null)} />}
     </div>
   );
 }
