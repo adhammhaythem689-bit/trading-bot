@@ -14,3 +14,4 @@
 {"run_id": "hourly-20261012T052056Z", "started_at": "2026-10-12T05:20:56.801497+00:00", "finished_at": "2026-10-12T05:20:59.861257+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261012T062903Z", "started_at": "2026-10-12T06:29:03.704647+00:00", "finished_at": "2026-10-12T06:29:06.335661+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261012T072504Z", "started_at": "2026-10-12T07:25:04.940348+00:00", "finished_at": "2026-10-12T07:25:07.603687+00:00", "status": "skipped", "summary": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"}
+{"run_id": "hourly-20261012T082426Z", "started_at": "2026-10-12T08:24:26.058307+00:00", "finished_at": "2026-10-12T08:24:29.086477+00:00", "status": "done", "summary": "hold"}
