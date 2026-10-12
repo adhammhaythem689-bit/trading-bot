@@ -1,10 +1,10 @@
 {
   "run_type": "hourly",
-  "run_id": "hourly-20261012T062903Z",
-  "started_at": "2026-10-12T06:29:03.704647+00:00",
-  "finished_at": "2026-10-12T06:29:06.335661+00:00",
-  "status": "done",
-  "summary": "hold",
+  "run_id": "hourly-20261012T072504Z",
+  "started_at": "2026-10-12T07:25:04.940348+00:00",
+  "finished_at": "2026-10-12T07:25:07.603687+00:00",
+  "status": "skipped",
+  "summary": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide",
   "trigger": "schedule",
   "steps": [
     {
@@ -12,14 +12,15 @@
       "employee": "price_fetcher",
       "description": "Pull the latest hourly BTC/USD candles from Kraken",
       "status": "done",
-      "started_at": "2026-10-12T06:29:03.704680+00:00",
-      "finished_at": "2026-10-12T06:29:06.007010+00:00",
-      "duration_ms": 2302,
+      "started_at": "2026-10-12T07:25:04.940377+00:00",
+      "finished_at": "2026-10-12T07:25:07.598801+00:00",
+      "duration_ms": 2658,
       "outputs": {
         "source": "Kraken BTC/USD",
-        "candles": 82,
-        "latest_candle": "2026-10-12 06:00:00",
-        "latest_close": 83671.8
+        "closed_candles": 82,
+        "latest_closed_candle": "2026-10-12 06:00:00",
+        "latest_close": 84128.6,
+        "note": "The hour still in progress is left out until it closes"
       },
       "error": null
     },
@@ -28,9 +29,9 @@
       "employee": "data_checker",
       "description": "Check the candles for gaps, duplicates and bad prices",
       "status": "done",
-      "started_at": "2026-10-12T06:29:06.007032+00:00",
-      "finished_at": "2026-10-12T06:29:06.009255+00:00",
-      "duration_ms": 2,
+      "started_at": "2026-10-12T07:25:07.598817+00:00",
+      "finished_at": "2026-10-12T07:25:07.600277+00:00",
+      "duration_ms": 1,
       "outputs": {
         "rows_checked": 82,
         "warnings": [],
@@ -43,15 +44,15 @@
       "employee": "indicator_analyst",
       "description": "Compute the 24h and 72h moving averages",
       "status": "done",
-      "started_at": "2026-10-12T06:29:06.009271+00:00",
-      "finished_at": "2026-10-12T06:29:06.014339+00:00",
-      "duration_ms": 5,
+      "started_at": "2026-10-12T07:25:07.600303+00:00",
+      "finished_at": "2026-10-12T07:25:07.603652+00:00",
+      "duration_ms": 3,
       "outputs": {
         "candle": "2026-10-12 06:00:00",
-        "close": 83671.8,
-        "short_ma": 83461.38,
-        "long_ma": 82994.82,
-        "gap_pct": 0.562,
+        "close": 84128.6,
+        "short_ma": 83480.41,
+        "long_ma": 83001.16,
+        "gap_pct": 0.577,
         "windows": "24h / 72h"
       },
       "error": null
@@ -60,14 +61,12 @@
       "step": "check_signal",
       "employee": "signal_watcher",
       "description": "Check whether the averages crossed this hour",
-      "status": "done",
-      "started_at": "2026-10-12T06:29:06.014355+00:00",
-      "finished_at": "2026-10-12T06:29:06.014372+00:00",
-      "duration_ms": 0,
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "duration_ms": null,
       "outputs": {
-        "crossover": "none",
-        "trend": "24h above 72h",
-        "what_it_means": "Trend is up, but the bot only buys in the hour the cross happens, so it waits"
+        "reason": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"
       },
       "error": null
     },
@@ -75,17 +74,12 @@
       "step": "check_risk",
       "employee": "risk_officer",
       "description": "Check drawdown against the kill switch and the stop-loss",
-      "status": "done",
-      "started_at": "2026-10-12T06:29:06.014380+00:00",
-      "finished_at": "2026-10-12T06:29:06.014421+00:00",
-      "duration_ms": 0,
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "duration_ms": null,
       "outputs": {
-        "equity": 1000.0,
-        "peak_equity": 1000.0,
-        "drawdown_pct": 0.0,
-        "kill_switch_at_pct": -20.0,
-        "trading_halted": false,
-        "position": "flat, no stop-loss to watch"
+        "reason": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"
       },
       "error": null
     },
@@ -93,21 +87,12 @@
       "step": "read_news",
       "employee": "news_reader",
       "description": "Read crypto headlines and score their sentiment",
-      "status": "done",
-      "started_at": "2026-10-12T06:29:06.014430+00:00",
-      "finished_at": "2026-10-12T06:29:06.258412+00:00",
-      "duration_ms": 243,
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "duration_ms": null,
       "outputs": {
-        "headlines": 40,
-        "sentiment": "neutral",
-        "score": -0.0947,
-        "sample": [
-          "Bitcoin shrugs off ETF outflows to trade above $84,000 as oil falls",
-          "Everyone wants SCOTUS to take up prediction markets: State of Crypto",
-          "Clarity's failure could speed crypto innovation while shielding incumbents"
-        ],
-        "feeds_failed": [],
-        "used_for_decisions": "no, logged for future research only"
+        "reason": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"
       },
       "error": null
     },
@@ -115,14 +100,12 @@
       "step": "read_mood",
       "employee": "mood_analyst",
       "description": "Read the Crypto Fear & Greed index",
-      "status": "done",
-      "started_at": "2026-10-12T06:29:06.258439+00:00",
-      "finished_at": "2026-10-12T06:29:06.334847+00:00",
-      "duration_ms": 76,
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "duration_ms": null,
       "outputs": {
-        "value": 69,
-        "label": "Greed",
-        "used_for_decisions": "no, logged for future research only"
+        "reason": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"
       },
       "error": null
     },
@@ -130,18 +113,12 @@
       "step": "decide_trade",
       "employee": "trader",
       "description": "Decide buy / sell / hold and update the paper portfolio",
-      "status": "done",
-      "started_at": "2026-10-12T06:29:06.334873+00:00",
-      "finished_at": "2026-10-12T06:29:06.335073+00:00",
-      "duration_ms": 0,
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "duration_ms": null,
       "outputs": {
-        "decision": "hold",
-        "price": 83671.8,
-        "cash_before": 1000.0,
-        "cash_after": 1000.0,
-        "btc_after": 0.0,
-        "equity": 1000.0,
-        "in_position": false
+        "reason": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"
       },
       "error": null
     },
@@ -149,17 +126,12 @@
       "step": "save_state",
       "employee": "record_keeper",
       "description": "Save the portfolio and logs for GitHub to commit",
-      "status": "done",
-      "started_at": "2026-10-12T06:29:06.335093+00:00",
-      "finished_at": "2026-10-12T06:29:06.335591+00:00",
-      "duration_ms": 0,
+      "status": "skipped",
+      "started_at": null,
+      "finished_at": null,
+      "duration_ms": null,
       "outputs": {
-        "files": [
-          "paper_state.json",
-          "paper_trade_log.csv",
-          "market_context_log.csv"
-        ],
-        "pushed_by": "GitHub Actions, right after this run"
+        "reason": "No new hourly candle since the last run (2026-10-12 06:00:00), nothing to decide"
       },
       "error": null
     }
