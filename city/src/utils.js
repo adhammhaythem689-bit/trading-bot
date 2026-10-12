@@ -9,7 +9,7 @@ export function employeeSteps(run, employeeId) {
 }
 
 // Worst status wins: one failed step means the employee failed this run.
-const STATUS_ORDER = ["error", "running", "not_reached", "skipped", "done"];
+const STATUS_ORDER = ["error", "running", "not_reached", "warning", "skipped", "done"];
 export function employeeStatus(steps) {
   if (!steps || steps.length === 0) return "no_data";
   for (const status of STATUS_ORDER) {
@@ -20,6 +20,7 @@ export function employeeStatus(steps) {
 
 export const STATUS_LABELS = {
   done: "Finished",
+  warning: "Finished, with a warning",
   skipped: "Nothing to do",
   error: "Failed",
   not_reached: "Didn't start",
@@ -29,6 +30,7 @@ export const STATUS_LABELS = {
 
 export const STATUS_COLORS = {
   done: "#34d399",
+  warning: "#fbbf24",
   skipped: "#9ca3af",
   error: "#ef4444",
   not_reached: "#4b5563",

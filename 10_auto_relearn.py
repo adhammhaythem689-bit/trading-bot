@@ -33,14 +33,18 @@ from engine.learning import label_trades_with_conditions, learn_filters
 from engine.backtest import run_backtest
 from engine.metrics import compute_metrics
 from engine.runlog import RunLogger
+from engine.history import extend_history
+import requests
 
 HISTORY_FILE = "relearn_history.csv"
+PRICE_HISTORY_FILE = "btc_usdt_1h.csv"
 LEARNED_FILTERS_FILE = "learned_filters.json"
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60  # once per day
 
 
 DAILY_STEPS = [
-    ("load_history", "historian", "Load the stored 2-year BTC price history and check its quality"),
+    ("refresh_history", "historian", "Add newly closed hourly candles from Binance to the stored history"),
+    ("load_history", "historian", "Load the stored BTC price history and check its quality"),
     ("find_patterns", "pattern_researcher", "Tag past trades by market conditions and count trustworthy patterns"),
     ("validate_filter", "validator", "Test whether the pattern filter helps on data it never saw"),
     ("save_filters", "pattern_researcher", "Save the pattern table the hourly trader reads"),
@@ -59,14 +63,25 @@ def _run_steps(log):
     print(f"[{datetime.now(timezone.utc).isoformat()}] Re-running self-analysis...")
     config = DEFAULT_CONFIG
 
+    with log.step("refresh_history") as s:
+        try:
+            result = extend_history(PRICE_HISTORY_FILE)
+            s.output(source="Binance BTC/USDT (data-api.binance.vision)", **result)
+            print(f"  History: +{result['appended']} new candles, {result['replaced']} re-fetched, "
+                  f"now ends {result['last_candle']}")
+        except requests.RequestException as e:
+            # don't fall back to another exchange's prices; analyze the existing file instead
+            s.output(source="Binance BTC/USDT (data-api.binance.vision)", appended=0)
+            s.warn(f"Couldn't reach Binance, history not refreshed this run: {e}")
+            print(f"  Warning: history not refreshed: {e}")
+
     with log.step("load_history") as s:
-        df_full, warnings = load_ohlcv_csv("btc_usdt_1h.csv")
+        df_full, warnings = load_ohlcv_csv(PRICE_HISTORY_FILE)
         for w in warnings:
             print(f"  Data quality warning: {w}")
         s.output(candles=len(df_full), first_candle=df_full["timestamp"].iloc[0],
                  last_candle=df_full["timestamp"].iloc[-1],
-                 warnings=[f"{w.kind}: {w.detail}" for w in warnings],
-                 note="This file is not refreshed on a schedule, it only grows when 01_fetch_data.py is run")
+                 warnings=[f"{w.kind}: {w.detail}" for w in warnings])
 
     with log.step("find_patterns") as s:
         split_idx = int(len(df_full) * 0.75)

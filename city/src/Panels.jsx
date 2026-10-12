@@ -62,7 +62,10 @@ function StepOutputs({ step }) {
       </div>
       {step.started_at && <Row label="Started" value={formatTime(step.started_at)} />}
       {step.duration_ms !== null && step.duration_ms !== undefined && <Row label="Took" value={`${step.duration_ms} ms`} />}
-      {step.error && <Row label="Error" value={step.error} color="#f87171" />}
+      {step.error && (
+        <Row label={step.status === "warning" ? "Warning" : "Error"} value={step.error}
+          color={step.status === "warning" ? "#fbbf24" : "#f87171"} />
+      )}
       {step.status === "not_reached" && (
         <div style={{ fontSize: 12, color: "#9ca3af", marginTop: 6 }}>
           This step never started because an earlier step in the same run failed.

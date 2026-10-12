@@ -76,9 +76,10 @@ export function drawStepScreen(employee, steps, status, color) {
   y += 22;
   for (const step of steps) {
     if (step.error) {
-      ctx.fillStyle = "#f87171";
+      const isWarning = step.status === "warning";
+      ctx.fillStyle = isWarning ? "#fbbf24" : "#f87171";
       ctx.font = "12px monospace";
-      ctx.fillText(("ERROR " + step.error).slice(0, 62), 16, y);
+      ctx.fillText(((isWarning ? "WARNING " : "ERROR ") + step.error).slice(0, 62), 16, y);
       y += 20;
     }
     for (const [key, value] of Object.entries(step.outputs || {})) {

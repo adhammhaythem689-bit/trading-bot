@@ -48,7 +48,7 @@ export const EMPLOYEES = [
 
   // daily run
   { id: "historian", title: "Historian", building: "research", run: "daily",
-    next: "Hands the history to the Pattern Researcher." },
+    next: "Hands the updated history to the Pattern Researcher." },
   { id: "pattern_researcher", title: "Pattern Researcher", building: "research", run: "daily",
     next: "Sends the pattern table to the Validator, then saves it for the Trader." },
   { id: "validator", title: "Validator", building: "validation", run: "daily",

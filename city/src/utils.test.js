@@ -25,6 +25,11 @@ describe("employeeStatus", () => {
   it("reports done only when every step finished", () => {
     expect(employeeStatus([{ status: "done" }, { status: "done" }])).toBe("done");
   });
+  it("a warning outranks done but not a failure", () => {
+    expect(employeeStatus([{ status: "warning" }, { status: "done" }])).toBe("warning");
+    expect(employeeStatus([{ status: "warning" }, { status: "error" }])).toBe("error");
+  });
+
   it("reports skipped and not_reached honestly", () => {
     expect(employeeStatus([{ status: "skipped" }])).toBe("skipped");
     expect(employeeStatus([{ status: "not_reached" }])).toBe("not_reached");

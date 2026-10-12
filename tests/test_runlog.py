@@ -59,6 +59,21 @@ def test_skip_remaining_marks_unrun_steps_skipped_with_reason(tmp_path):
     assert run["steps"][2]["outputs"]["reason"] == "no new candle"
 
 
+def test_warning_marks_the_step_without_failing_the_run(tmp_path):
+    log = RunLogger("test", STEPS, run_dir=str(tmp_path))
+    with log.step("a") as s:
+        s.warn("source unreachable")
+    with log.step("b"):
+        pass
+    log.finish("done")
+    log.write()
+    run = read_latest(tmp_path)
+    assert run["steps"][0]["status"] == "warning"
+    assert run["steps"][0]["error"] == "source unreachable"
+    assert run["steps"][1]["status"] == "done"
+    assert run["status"] == "done"
+
+
 def test_run_that_never_finishes_is_marked_incomplete(tmp_path):
     log = RunLogger("test", STEPS, run_dir=str(tmp_path))
     with log.step("a"):

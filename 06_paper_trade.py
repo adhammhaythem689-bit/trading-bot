@@ -103,11 +103,14 @@ def append_csv(path, header, row):
 
 
 def fetch_candles():
-    limit = config.long_window + 10
+    limit = config.long_window + 11
     ohlcv = exchange.fetch_ohlcv(SYMBOL, timeframe=TIMEFRAME, limit=limit)
     df = pd.DataFrame(ohlcv, columns=["timestamp", "open", "high", "low", "close", "volume"])
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
-    return df
+    # Kraken includes the candle that's still forming. Its "close" is just the
+    # latest price, so decide only on fully closed candles, like the backtests do.
+    now = pd.Timestamp.now(tz="UTC").tz_localize(None)
+    return df[df["timestamp"] + pd.Timedelta(hours=1) <= now].reset_index(drop=True)
 
 
 HOURLY_STEPS = [
@@ -135,8 +138,9 @@ def run_once(state, learned_filters, bins):
 def _run_steps(log, state, learned_filters, bins):
     with log.step("fetch_prices") as s:
         raw = fetch_candles()
-        s.output(source=f"Kraken {SYMBOL}", candles=len(raw),
-                 latest_candle=raw["timestamp"].iloc[-1], latest_close=raw["close"].iloc[-1])
+        s.output(source=f"Kraken {SYMBOL}", closed_candles=len(raw),
+                 latest_closed_candle=raw["timestamp"].iloc[-1], latest_close=raw["close"].iloc[-1],
+                 note="The hour still in progress is left out until it closes")
 
     with log.step("check_data") as s:
         raw, warnings = validate_ohlcv(raw, source="Kraken live fetch")

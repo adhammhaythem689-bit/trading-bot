@@ -40,7 +40,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           if [ -d runlog ]; then git add runlog/; fi
           if [ "${{ job.status }}" = "success" ]; then
-            git add learned_filters.json relearn_history.csv
+            git add learned_filters.json relearn_history.csv btc_usdt_1h.csv
           fi
           git diff --quiet --cached || git commit -m "Daily re-learn $(date -u +%Y-%m-%d) (${{ job.status }})"
           git pull --rebase --autostash origin main

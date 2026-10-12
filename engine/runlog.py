@@ -45,9 +45,14 @@ def jsonable(value):
 class _Step:
     def __init__(self, record):
         self.record = record
+        self.warning = None
 
     def output(self, **values):
         self.record["outputs"].update(jsonable(values))
+
+    def warn(self, message):
+        """The step finished, but something the reader should know about went wrong."""
+        self.warning = message
 
 
 class RunLogger:
@@ -78,9 +83,14 @@ class RunLogger:
         record["status"] = "running"
         record["started_at"] = _now()
         start = datetime.now(timezone.utc)
+        handle = _Step(record)
         try:
-            yield _Step(record)
-            record["status"] = "done"
+            yield handle
+            if handle.warning:
+                record["status"] = "warning"
+                record["error"] = handle.warning
+            else:
+                record["status"] = "done"
         except Exception as e:
             record["status"] = "error"
             record["error"] = f"{type(e).__name__}: {e}"
