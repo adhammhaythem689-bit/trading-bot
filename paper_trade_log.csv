@@ -57,3 +57,4 @@ timestamp,event,price,cash,btc,equity,note
 2026-10-14 00:00:00,tick,83339.2,1000.0,0.0,1000.0,hold | news=neutral fear_greed=62
 2026-10-14 05:00:00,tick,83378.0,1000.0,0.0,1000.0,hold | news=neutral fear_greed=62
 2026-10-14 10:00:00,tick,83390.1,1000.0,0.0,1000.0,hold | news=neutral fear_greed=62
+2026-10-14 16:00:00,tick,81928.3,1000.0,0.0,1000.0,hold | news=neutral fear_greed=62
