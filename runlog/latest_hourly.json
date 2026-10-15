@@ -1,8 +1,8 @@
 {
   "run_type": "hourly",
-  "run_id": "hourly-20261014T235113Z",
-  "started_at": "2026-10-14T23:51:13.490642+00:00",
-  "finished_at": "2026-10-14T23:51:16.570080+00:00",
+  "run_id": "hourly-20261015T042341Z",
+  "started_at": "2026-10-15T04:23:41.159062+00:00",
+  "finished_at": "2026-10-15T04:23:44.247957+00:00",
   "status": "done",
   "summary": "hold",
   "trigger": "schedule",
@@ -12,14 +12,14 @@
       "employee": "price_fetcher",
       "description": "Pull the latest hourly BTC/USD candles from Kraken",
       "status": "done",
-      "started_at": "2026-10-14T23:51:13.490664+00:00",
-      "finished_at": "2026-10-14T23:51:15.894080+00:00",
-      "duration_ms": 2403,
+      "started_at": "2026-10-15T04:23:41.159097+00:00",
+      "finished_at": "2026-10-15T04:23:43.534514+00:00",
+      "duration_ms": 2375,
       "outputs": {
         "source": "Kraken BTC/USD",
         "closed_candles": 82,
-        "latest_closed_candle": "2026-10-14 22:00:00",
-        "latest_close": 81559.6,
+        "latest_closed_candle": "2026-10-15 03:00:00",
+        "latest_close": 80828.2,
         "note": "The hour still in progress is left out until it closes"
       },
       "error": null
@@ -29,8 +29,8 @@
       "employee": "data_checker",
       "description": "Check the candles for gaps, duplicates and bad prices",
       "status": "done",
-      "started_at": "2026-10-14T23:51:15.894093+00:00",
-      "finished_at": "2026-10-14T23:51:15.895244+00:00",
+      "started_at": "2026-10-15T04:23:43.534536+00:00",
+      "finished_at": "2026-10-15T04:23:43.536353+00:00",
       "duration_ms": 1,
       "outputs": {
         "rows_checked": 82,
@@ -44,15 +44,15 @@
       "employee": "indicator_analyst",
       "description": "Compute the 24h and 72h moving averages",
       "status": "done",
-      "started_at": "2026-10-14T23:51:15.895255+00:00",
-      "finished_at": "2026-10-14T23:51:15.897618+00:00",
-      "duration_ms": 2,
+      "started_at": "2026-10-15T04:23:43.536371+00:00",
+      "finished_at": "2026-10-15T04:23:43.540758+00:00",
+      "duration_ms": 4,
       "outputs": {
-        "candle": "2026-10-14 22:00:00",
-        "close": 81559.6,
-        "short_ma": 82670.15,
-        "long_ma": 82993.4,
-        "gap_pct": -0.389,
+        "candle": "2026-10-15 03:00:00",
+        "close": 80828.2,
+        "short_ma": 82253.9,
+        "long_ma": 82834.0,
+        "gap_pct": -0.7,
         "windows": "24h / 72h"
       },
       "error": null
@@ -62,8 +62,8 @@
       "employee": "signal_watcher",
       "description": "Check whether the averages crossed this hour",
       "status": "done",
-      "started_at": "2026-10-14T23:51:15.897628+00:00",
-      "finished_at": "2026-10-14T23:51:15.897637+00:00",
+      "started_at": "2026-10-15T04:23:43.540772+00:00",
+      "finished_at": "2026-10-15T04:23:43.540787+00:00",
       "duration_ms": 0,
       "outputs": {
         "crossover": "none",
@@ -77,8 +77,8 @@
       "employee": "risk_officer",
       "description": "Check drawdown against the kill switch and the stop-loss",
       "status": "done",
-      "started_at": "2026-10-14T23:51:15.897640+00:00",
-      "finished_at": "2026-10-14T23:51:15.897661+00:00",
+      "started_at": "2026-10-15T04:23:43.540793+00:00",
+      "finished_at": "2026-10-15T04:23:43.540827+00:00",
       "duration_ms": 0,
       "outputs": {
         "equity": 1000.0,
@@ -95,17 +95,17 @@
       "employee": "news_reader",
       "description": "Read crypto headlines and score their sentiment",
       "status": "done",
-      "started_at": "2026-10-14T23:51:15.897664+00:00",
-      "finished_at": "2026-10-14T23:51:16.315680+00:00",
-      "duration_ms": 418,
+      "started_at": "2026-10-15T04:23:43.540834+00:00",
+      "finished_at": "2026-10-15T04:23:43.988729+00:00",
+      "duration_ms": 447,
       "outputs": {
         "headlines": 40,
         "sentiment": "neutral",
-        "score": -0.0588,
+        "score": -0.0599,
         "sample": [
-          "Kalshi CEO says state-led oversight of U.S. prediction markets would push them out",
-          "AI agents make 138 million crypto payments as U.S. dominates spending on AI models",
-          "Crypto Long & Short: Why gold and bitcoin belong in the same portfolio"
+          "Bitcoin mining pool once handling 2.3% of network shuts after hashrate falls 65%",
+          "Bitcoin wilts as Fed rate uncertainty weighs. Kospi plunges 8%",
+          "Kalshi CEO says state-led oversight of U.S. prediction markets would push them out"
         ],
         "feeds_failed": [],
         "used_for_decisions": "no, logged for future research only"
@@ -117,12 +117,12 @@
       "employee": "mood_analyst",
       "description": "Read the Crypto Fear & Greed index",
       "status": "done",
-      "started_at": "2026-10-14T23:51:16.315692+00:00",
-      "finished_at": "2026-10-14T23:51:16.569734+00:00",
-      "duration_ms": 254,
+      "started_at": "2026-10-15T04:23:43.988752+00:00",
+      "finished_at": "2026-10-15T04:23:44.247199+00:00",
+      "duration_ms": 258,
       "outputs": {
-        "value": 62,
-        "label": "Greed",
+        "value": 53,
+        "label": "Neutral",
         "used_for_decisions": "no, logged for future research only"
       },
       "error": null
@@ -132,12 +132,12 @@
       "employee": "trader",
       "description": "Decide buy / sell / hold and update the paper portfolio",
       "status": "done",
-      "started_at": "2026-10-14T23:51:16.569746+00:00",
-      "finished_at": "2026-10-14T23:51:16.569881+00:00",
+      "started_at": "2026-10-15T04:23:44.247230+00:00",
+      "finished_at": "2026-10-15T04:23:44.247411+00:00",
       "duration_ms": 0,
       "outputs": {
         "decision": "hold",
-        "price": 81559.6,
+        "price": 80828.2,
         "cash_before": 1000.0,
         "cash_after": 1000.0,
         "btc_after": 0.0,
@@ -151,8 +151,8 @@
       "employee": "record_keeper",
       "description": "Save the portfolio and logs for GitHub to commit",
       "status": "done",
-      "started_at": "2026-10-14T23:51:16.569886+00:00",
-      "finished_at": "2026-10-14T23:51:16.570058+00:00",
+      "started_at": "2026-10-15T04:23:44.247441+00:00",
+      "finished_at": "2026-10-15T04:23:44.247888+00:00",
       "duration_ms": 0,
       "outputs": {
         "files": [
