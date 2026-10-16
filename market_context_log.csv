@@ -65,3 +65,4 @@ timestamp,news_label,news_score,fear_greed,fear_greed_label
 2026-10-15 13:00:00,neutral,-0.1006,53,Neutral
 2026-10-15 18:00:00,neutral,-0.1029,53,Neutral
 2026-10-15 21:00:00,neutral,-0.1029,53,Neutral
+2026-10-16 00:00:00,neutral,-0.1035,63,Greed
