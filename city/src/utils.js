@@ -114,6 +114,9 @@ export function formatValue(value) {
   if (value === null || value === undefined) return "Not available";
   if (Array.isArray(value)) return value.length ? value.join(" · ") : "none";
   if (typeof value === "boolean") return value ? "yes" : "no";
+  if (typeof value === "object") {
+    return Object.entries(value).map(([k, v]) => `${humanizeKey(k).trim()} ${formatValue(v)}`).join(", ") || "none";
+  }
   if (typeof value === "number") return Number.isInteger(value) ? String(value) : String(Math.round(value * 1000) / 1000);
   return String(value);
 }

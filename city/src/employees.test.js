@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { BUILDINGS, EMPLOYEES, employeesIn } from "./employees";
 import hourlyRun from "./__fixtures__/latest_hourly.json";
 import dailyRun from "./__fixtures__/latest_daily.json";
+import experimentsRun from "./__fixtures__/latest_experiments.json";
 
 describe("employee registry", () => {
   it("ids are unique", () => {
@@ -28,7 +29,9 @@ describe("employee registry", () => {
 // The fixtures are real run logs written by engine/runlog.py. If someone
 // renames or adds a step in Python without updating the city, these fail.
 describe("registry matches the real run logs", () => {
-  for (const [name, run, type] of [["hourly", hourlyRun, "hourly"], ["daily", dailyRun, "daily"]]) {
+  for (const [name, run, type] of [
+    ["hourly", hourlyRun, "hourly"], ["daily", dailyRun, "daily"], ["experiments", experimentsRun, "experiments"],
+  ]) {
     it(`every ${name} step's employee exists with run type ${type}`, () => {
       for (const step of run.steps) {
         const e = EMPLOYEES.find((x) => x.id === step.employee);

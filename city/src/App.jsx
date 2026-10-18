@@ -8,7 +8,7 @@ import { useLiveData, IS_GITHUB_SOURCE, DATA_BASE } from "./liveData";
 import {
   employeeSteps, employeeStatus, nextHourlyRun, nextDailyRun, previousHourlySlot, previousDailySlot, isRunDue,
   timeAgo, timeUntil, formatTime,
-  STATUS_COLORS, HOURLY_LATE_MINUTES, DAILY_LATE_MINUTES, isSnapshotStale,
+  STATUS_COLORS, STATUS_LABELS, HOURLY_LATE_MINUTES, DAILY_LATE_MINUTES, isSnapshotStale,
 } from "./utils";
 
 const REPLAY_STEP_MS = 1800;
@@ -46,6 +46,25 @@ function RunChip({ label, run, now, nextAt, previousSlot, lateMinutes }) {
   );
 }
 
+const EXPERIMENT_SHORT_NAMES = { trend_researcher: "Trend", breakout_researcher: "Breakout", dip_researcher: "Dip" };
+
+function ExperimentsChip({ run, now }) {
+  if (!run) return <Chip>Experiments: not started yet</Chip>;
+  const parts = run.steps.map((s) => {
+    const o = s.outputs || {};
+    const name = EXPERIMENT_SHORT_NAMES[s.employee] || s.employee;
+    if (s.status !== "done" || o.return_since_start_pct == null) return `${name} ${STATUS_LABELS[s.status] || s.status}`;
+    const r = o.return_since_start_pct;
+    return `${name} ${r >= 0 ? "+" : ""}${r}%${o.in_position ? " (in BTC)" : ""}`;
+  });
+  const btc = run.steps.find((s) => s.outputs?.btc_since_start_pct != null)?.outputs.btc_since_start_pct;
+  return (
+    <Chip title={`Paper experiments, each started with $1,000. Updated ${timeAgo(run.finished_at, now)}.`}>
+      Experiments: {parts.join(" · ")}{btc != null ? ` · BTC ${btc >= 0 ? "+" : ""}${btc}%` : ""}
+    </Chip>
+  );
+}
+
 export default function App() {
   const live = useLiveData();
   const now = useNow();
@@ -53,7 +72,10 @@ export default function App() {
   const [roomId, setRoomId] = useState(null);
   const [replay, setReplay] = useState(null); // { runType, index }
 
-  const runs = useMemo(() => ({ hourly: live.hourly, daily: live.daily }), [live.hourly, live.daily]);
+  const runs = useMemo(
+    () => ({ hourly: live.hourly, daily: live.daily, experiments: live.experiments }),
+    [live.hourly, live.daily, live.experiments],
+  );
 
   const statuses = useMemo(() => {
     const out = {};
@@ -95,6 +117,7 @@ export default function App() {
           previousSlot={previousHourlySlot(new Date(now))} lateMinutes={HOURLY_LATE_MINUTES} />
         <RunChip label="Daily run" run={live.daily} now={now} nextAt={nextDailyRun(new Date(now))}
           previousSlot={previousDailySlot(new Date(now))} lateMinutes={DAILY_LATE_MINUTES} />
+        <ExperimentsChip run={live.experiments} now={now} />
         <Chip title="GitHub can cache files for up to 5 minutes">
           {live.loading ? "Loading…" : `Checked ${IS_GITHUB_SOURCE ? "GitHub" : "local data"} ${timeAgo(live.fetchedAt, now)}`}
         </Chip>

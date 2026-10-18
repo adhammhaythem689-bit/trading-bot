@@ -21,7 +21,8 @@ the step log that run wrote.
 | | Pattern Researcher | counts trustworthy market-condition patterns (daily) |
 | Validation Center | Validator | does the pattern filter help on unseen data (daily) |
 | Historical Simulation Lab | Backtest Analyst | 2-year backtest; not scheduled, from `export_city_data.py` |
-| Strategy / Model Research Labs | nobody | not implemented, so nobody works there |
+| Strategy Research Lab | Trend, Breakout, Dip Researchers | live paper experiments from `12_experiments.py`, each with its own $1,000 |
+| Model Research Lab | nobody | not implemented, so nobody works there |
 
 ## Where the data comes from
 

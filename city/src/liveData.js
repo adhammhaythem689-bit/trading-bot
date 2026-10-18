@@ -16,17 +16,18 @@ async function getJson(path) {
 
 export function useLiveData() {
   const [state, setState] = useState({
-    hourly: null, daily: null, snapshot: null, fetchedAt: null, error: null, loading: true,
+    hourly: null, daily: null, experiments: null, snapshot: null, fetchedAt: null, error: null, loading: true,
   });
 
   const load = useCallback(async () => {
     try {
-      const [hourly, daily, snapshot] = await Promise.all([
+      const [hourly, daily, experiments, snapshot] = await Promise.all([
         getJson("runlog/latest_hourly.json"),
         getJson("runlog/latest_daily.json"),
+        getJson("runlog/latest_experiments.json"),
         getJson("city/public/city_data.json"),
       ]);
-      setState({ hourly, daily, snapshot, fetchedAt: new Date().toISOString(), error: null, loading: false });
+      setState({ hourly, daily, experiments, snapshot, fetchedAt: new Date().toISOString(), error: null, loading: false });
     } catch (e) {
       // keep the last good data on screen, but flag it
       setState((s) => ({ ...s, error: e.message, loading: false }));

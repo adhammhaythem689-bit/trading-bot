@@ -86,5 +86,6 @@ describe("formatValue", () => {
     expect(formatValue(null)).toBe("Not available");
     expect(formatValue([])).toBe("none");
     expect(formatValue(true)).toBe("yes");
+    expect(formatValue({ short: 48, long: 168 })).toBe("short 48, long 168");
   });
 });

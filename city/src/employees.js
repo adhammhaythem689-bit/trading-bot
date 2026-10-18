@@ -13,11 +13,7 @@ export const BUILDINGS = [
   { id: "research", name: "Pattern Research Lab", color: "#a78bfa", position: [-7, 0, 3.5], height: 2.8, seed: 66 },
   { id: "validation", name: "Validation Center", color: "#2dd4bf", position: [-3.5, 0, 3.5], height: 2.6, seed: 77 },
   { id: "backtest", name: "Historical Simulation Lab", color: "#60a5fa", position: [0, 0, 3.5], height: 3.0, seed: 88 },
-  {
-    id: "strategy_lab", name: "Strategy Research Lab", color: "#6b7280", position: [3.5, 0, 3.5], height: 2.2, seed: 99,
-    plannedOnly: true,
-    note: "Nobody works here yet. The project has one strategy (moving-average crossover); RSI, momentum and mean-reversion strategies haven't been built.",
-  },
+  { id: "strategy_lab", name: "Strategy Research Lab", color: "#e879f9", position: [3.5, 0, 3.5], height: 2.8, seed: 99 },
   {
     id: "ml_lab", name: "Model Research Lab", color: "#6b7280", position: [7, 0, 3.5], height: 2.2, seed: 101,
     plannedOnly: true,
@@ -54,6 +50,14 @@ export const EMPLOYEES = [
   { id: "validator", title: "Validator", building: "validation", run: "daily",
     next: "Its verdict is recorded in relearn_history.csv." },
 
+  // live paper experiments (12_experiments.py), each with its own $1,000
+  { id: "trend_researcher", title: "Trend Researcher", building: "strategy_lab", run: "experiments",
+    next: "Re-checks the EMA trend at the next new candle. Results are compared with simply holding BTC." },
+  { id: "breakout_researcher", title: "Breakout Researcher", building: "strategy_lab", run: "experiments",
+    next: "Watches for a new 7-day high to buy, or a 3-day low to sell, at the next new candle." },
+  { id: "dip_researcher", title: "Dip Researcher", building: "strategy_lab", run: "experiments",
+    next: "Waits for an oversold dip during an uptrend. Expect long stretches with no trades." },
+
   // not scheduled, data comes from the exported backtest snapshot
   { id: "backtest_analyst", title: "Backtest Analyst", building: "backtest", run: "manual",
     task: "Replays the strategy over 2 years of BTC history, with fees and risk rules",
@@ -63,6 +67,7 @@ export const EMPLOYEES = [
 export const RUN_SCHEDULES = {
   hourly: "Checks every 15 minutes (:07, :22, :37, :52 UTC) and acts once per new hourly candle. GitHub often runs late or skips checks; missed crossovers are caught up on the next run.",
   daily: "Once a day at 00:15 UTC",
+  experiments: "Alongside the hourly bot, once per new hourly candle. Paper money only; none of these strategies showed a proven edge in research.",
   manual: "Not scheduled, runs only when started by hand",
 };
 

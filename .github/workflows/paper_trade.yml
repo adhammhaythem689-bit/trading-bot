@@ -30,6 +30,14 @@ jobs:
       - name: Run paper trader (single check)
         run: python 06_paper_trade.py --once
 
+      # Independent of the main bot: runs even if it failed, and its own failure
+      # doesn't mark the job failed (so the main bot's state still gets committed).
+      # Each experiment only saves its state after its own step succeeded.
+      - name: Run strategy experiments
+        if: always()
+        continue-on-error: true
+        run: python 12_experiments.py
+
       # always() so a failed run still publishes its run log (which step broke, and why);
       # trading state is only committed when the run succeeded
       - name: Commit updated state and logs
@@ -38,6 +46,7 @@ jobs:
           git config user.name "trading-bot-ci"
           git config user.email "actions@users.noreply.github.com"
           if [ -d runlog ]; then git add runlog/; fi
+          git add experiments/
           if [ "${{ job.status }}" = "success" ]; then
             git add paper_state.json paper_trade_log.csv market_context_log.csv
           fi
