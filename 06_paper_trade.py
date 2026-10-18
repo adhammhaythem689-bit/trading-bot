@@ -38,6 +38,7 @@ from engine.features import prepare, compute_bins
 from engine.backtest import step_decision
 from engine.data import validate_ohlcv
 from engine.runlog import RunLogger
+from engine.live import new_candles_since, effective_signal
 
 _market_context_mod = import_module("09_market_context")
 get_news_sentiment = _market_context_mod.get_news_sentiment
@@ -103,7 +104,8 @@ def append_csv(path, header, row):
 
 
 def fetch_candles():
-    limit = config.long_window + 11
+    # enough candles to cover the indicator warm-up plus a gap of ~5 days of skipped runs
+    limit = config.long_window + 130
     ohlcv = exchange.fetch_ohlcv(SYMBOL, timeframe=TIMEFRAME, limit=limit)
     df = pd.DataFrame(ohlcv, columns=["timestamp", "open", "high", "low", "close", "volume"])
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms")
@@ -131,7 +133,10 @@ def run_once(state, learned_filters, bins):
     try:
         state = _run_steps(log, state, learned_filters, bins)
     finally:
-        log.write()
+        # The workflow runs every 15 minutes but a new candle only appears once
+        # an hour. "Nothing new" runs aren't written, so they don't create commits.
+        if log.run["status"] != "skipped":
+            log.write()
     return state
 
 
@@ -157,7 +162,8 @@ def _run_steps(log, state, learned_filters, bins):
                  gap_pct=round(gap_pct, 3),
                  windows=f"{config.short_window}h / {config.long_window}h")
 
-    if state["last_candle_ts"] == latest_ts:
+    new_rows, covers_gap = new_candles_since(df, state["last_candle_ts"])
+    if new_rows.empty:
         reason = f"No new hourly candle since the last run ({latest_ts}), nothing to decide"
         print(f"[{datetime.now(timezone.utc).isoformat()}] {reason}. Skipping.")
         log.skip_remaining(reason)
@@ -165,7 +171,8 @@ def _run_steps(log, state, learned_filters, bins):
         return state
 
     with log.step("check_signal") as s:
-        change = latest["position_change"]
+        change, cross_ts, missed = effective_signal(new_rows)
+        late = cross_ts is not None and str(cross_ts) != latest_ts
         crossover = "bullish (24h crossed above 72h)" if change == 1 else \
                     "bearish (24h crossed below 72h)" if change == -1 else "none"
         trend_up = latest["signal"] == 1
@@ -174,13 +181,24 @@ def _run_steps(log, state, learned_filters, bins):
         elif change == -1:
             meaning = "Sell signal: exiting the position if one is open"
         elif trend_up and not state["in_position"]:
-            meaning = "Trend is up, but the bot only buys in the hour the cross happens, so it waits"
+            meaning = "Trend is up, but the bot only buys after a fresh cross, so it waits"
         elif trend_up:
             meaning = "Trend still up, holding the open position"
         else:
             meaning = "Trend is down, staying out of the market"
-        s.output(crossover=crossover, trend="24h above 72h" if trend_up else "24h below 72h",
-                 what_it_means=meaning)
+        info = {"crossover": crossover, "trend": "24h above 72h" if trend_up else "24h below 72h",
+                "what_it_means": meaning, "new_candles_checked": len(new_rows),
+                "missed_candles": missed}
+        if late:
+            hours_late = int((pd.Timestamp(latest_ts) - pd.Timestamp(cross_ts)).total_seconds() // 3600)
+            info["late_signal"] = (f"The cross happened at the {cross_ts} candle, but GitHub skipped the "
+                                   f"runs that should have caught it. Acting {hours_late}h late, at the current price.")
+        s.output(**info)
+        if not covers_gap:
+            s.warn("Runs were skipped for longer than the fetched data covers; "
+                   "a crossover before the oldest fetched candle could have been missed")
+        decision_row = latest.copy()
+        decision_row["position_change"] = change
 
     with log.step("check_risk") as s:
         price = latest["close"]
@@ -213,7 +231,9 @@ def _run_steps(log, state, learned_filters, bins):
 
     with log.step("decide_trade") as s:
         before = {"cash": state["cash"], "btc": state["btc"]}
-        state, note = step_decision(state, latest, config, learned_filters=learned_filters, bins=bins)
+        state, note = step_decision(state, decision_row, config, learned_filters=learned_filters, bins=bins)
+        if late and change != 0 and note != "hold":
+            note = f"{note} (late: cross was at {cross_ts})"
         equity_now = state["cash"] + state["btc"] * price
         s.output(decision=note, price=price, cash_before=round(before["cash"], 2),
                  cash_after=round(state["cash"], 2), btc_after=round(state["btc"], 8),

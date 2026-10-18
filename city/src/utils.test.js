@@ -47,10 +47,10 @@ describe("employeeSteps", () => {
 });
 
 describe("schedule helpers", () => {
-  it("next hourly run is the next :05 UTC", () => {
-    expect(nextHourlyRun(new Date("2026-01-01T12:03:00Z")).toISOString()).toBe("2026-01-01T12:05:00.000Z");
-    expect(nextHourlyRun(new Date("2026-01-01T12:05:00Z")).toISOString()).toBe("2026-01-01T13:05:00.000Z");
-    expect(nextHourlyRun(new Date("2026-01-01T23:30:00Z")).toISOString()).toBe("2026-01-02T00:05:00.000Z");
+  it("next hourly run is the next :07 UTC", () => {
+    expect(nextHourlyRun(new Date("2026-01-01T12:03:00Z")).toISOString()).toBe("2026-01-01T12:07:00.000Z");
+    expect(nextHourlyRun(new Date("2026-01-01T12:07:00Z")).toISOString()).toBe("2026-01-01T13:07:00.000Z");
+    expect(nextHourlyRun(new Date("2026-01-01T23:30:00Z")).toISOString()).toBe("2026-01-02T00:07:00.000Z");
   });
   it("next daily run is the next 00:15 UTC", () => {
     expect(nextDailyRun(new Date("2026-01-01T00:10:00Z")).toISOString()).toBe("2026-01-01T00:15:00.000Z");
@@ -59,7 +59,7 @@ describe("schedule helpers", () => {
   it("a run is due when its slot passed without one, not 'next in 50 min'", () => {
     const now = new Date("2026-01-01T12:18:00Z");
     const slot = previousHourlySlot(now);
-    expect(slot.toISOString()).toBe("2026-01-01T12:05:00.000Z");
+    expect(slot.toISOString()).toBe("2026-01-01T12:07:00.000Z");
     const t = now.getTime();
     expect(isRunDue({ started_at: "2026-01-01T11:17:00Z" }, slot, t)).toBe(true);
     expect(isRunDue({ started_at: "2026-01-01T12:16:00Z" }, slot, t)).toBe(false);

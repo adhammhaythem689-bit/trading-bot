@@ -38,9 +38,13 @@ export const STATUS_COLORS = {
   no_data: "#374151",
 };
 
+// The workflow checks at :07, :22, :37 and :52; a new candle (and so a new
+// run log) appears at the first check after each hour, :07.
+export const HOURLY_CRON_MINUTE = 7;
+
 export function nextHourlyRun(now = new Date()) {
   const d = new Date(now);
-  d.setUTCMinutes(5, 0, 0);
+  d.setUTCMinutes(HOURLY_CRON_MINUTE, 0, 0);
   if (d <= now) d.setUTCHours(d.getUTCHours() + 1);
   return d;
 }

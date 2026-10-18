@@ -61,7 +61,7 @@ export const EMPLOYEES = [
 ];
 
 export const RUN_SCHEDULES = {
-  hourly: "Every hour at :05 UTC (GitHub usually starts it 10–20 minutes late)",
+  hourly: "Checks every 15 minutes (:07, :22, :37, :52 UTC) and acts once per new hourly candle. GitHub often runs late or skips checks; missed crossovers are caught up on the next run.",
   daily: "Once a day at 00:15 UTC",
   manual: "Not scheduled, runs only when started by hand",
 };
