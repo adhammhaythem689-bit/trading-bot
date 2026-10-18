@@ -1,0 +1,1080 @@
+{
+  "generated_at": "2026-10-18T20:43:52.868371+00:00",
+  "history": {
+    "candles": 17681,
+    "first": "2024-10-11 11:00:00",
+    "last": "2026-10-18 03:00:00",
+    "warnings": []
+  },
+  "method": {
+    "walk_forward": "choose settings on 270 days (best Sharpe), test on the next 90 days, repeat; 5 folds stitched",
+    "execution": "signal at a candle's close, filled at the next candle's open",
+    "cost_per_side_pct": 0.15,
+    "double_cost_check_pct": 0.3,
+    "position": "long-only, 100% of equity, no leverage",
+    "configs_tried": 92
+  },
+  "out_of_sample_period": "2025-07-08 11:00:00 to 2026-10-01 10:00:00",
+  "buy_and_hold": {
+    "return_pct": -23.08,
+    "max_drawdown_pct": -53.74,
+    "trades": 1,
+    "win_rate": null,
+    "avg_win_pct": null,
+    "avg_loss_pct": null,
+    "profit_factor": null,
+    "sharpe": -0.3
+  },
+  "current_bot": {
+    "return_pct": -12.85,
+    "max_drawdown_pct": -34.57,
+    "trades": 87,
+    "win_rate": 32.18,
+    "avg_win_pct": 3.43,
+    "avg_loss_pct": -1.76,
+    "profit_factor": 0.93,
+    "sharpe": -0.27
+  },
+  "candidates": {
+    "rsi_reversion (no stop)": {
+      "strategy": "rsi_reversion",
+      "family": "Mean reversion",
+      "label": "RSI oversold bounce",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -1.92,
+        "max_drawdown_pct": -3.91,
+        "trades": 4,
+        "win_rate": 50.0,
+        "avg_win_pct": 0.33,
+        "avg_loss_pct": -1.29,
+        "profit_factor": 0.26,
+        "sharpe": -0.42
+      },
+      "out_of_sample_double_costs_return_pct": -3.09,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "low": 30,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": 0.57,
+          "return_pct": -0.94,
+          "trades": 2,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "low": 30,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": 1.47,
+          "return_pct": 0.38,
+          "trades": 1,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "low": 25,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": 1.01,
+          "return_pct": -1.36,
+          "trades": 1,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "low": 25,
+            "high": 60,
+            "trend_window": 168
+          },
+          "train_sharpe": 0.19,
+          "return_pct": 0.0,
+          "trades": 0,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "low": 25,
+            "high": 60,
+            "trend_window": 168
+          },
+          "train_sharpe": 0.19,
+          "return_pct": 0.0,
+          "trades": 0,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "rsi_reversion (3% stop)": {
+      "strategy": "rsi_reversion",
+      "family": "Mean reversion",
+      "label": "RSI oversold bounce",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -1.92,
+        "max_drawdown_pct": -3.91,
+        "trades": 4,
+        "win_rate": 50.0,
+        "avg_win_pct": 0.33,
+        "avg_loss_pct": -1.29,
+        "profit_factor": 0.26,
+        "sharpe": -0.42
+      },
+      "out_of_sample_double_costs_return_pct": -3.09,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "low": 30,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": 0.56,
+          "return_pct": -0.94,
+          "trades": 2,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "low": 30,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": 1.47,
+          "return_pct": 0.38,
+          "trades": 1,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "low": 25,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": 1.01,
+          "return_pct": -1.36,
+          "trades": 1,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "low": 25,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": -0.79,
+          "return_pct": 0.0,
+          "trades": 0,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "low": 25,
+            "high": 50,
+            "trend_window": 168
+          },
+          "train_sharpe": -0.79,
+          "return_pct": 0.0,
+          "trades": 0,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "price_above_sma (3% stop)": {
+      "strategy": "price_above_sma",
+      "family": "Trend following",
+      "label": "Hold while price is above its long average",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -18.16,
+        "max_drawdown_pct": -42.01,
+        "trades": 100,
+        "win_rate": 6.0,
+        "avg_win_pct": 6.72,
+        "avg_loss_pct": -0.82,
+        "profit_factor": 0.53,
+        "sharpe": -0.54
+      },
+      "out_of_sample_double_costs_return_pct": -39.68,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": 0.24,
+          "return_pct": -2.18,
+          "trades": 26,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": -0.25,
+          "return_pct": -14.31,
+          "trades": 11,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "window": 336
+          },
+          "train_sharpe": -1.51,
+          "return_pct": -19.45,
+          "trades": 38,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": -2.35,
+          "return_pct": 9.94,
+          "trades": 2,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": -0.52,
+          "return_pct": 10.26,
+          "trades": 23,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "sma_cross (no stop)": {
+      "strategy": "sma_cross",
+      "family": "Trend following",
+      "label": "SMA crossover (the current bot's family)",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -20.74,
+        "max_drawdown_pct": -40.31,
+        "trades": 76,
+        "win_rate": 31.58,
+        "avg_win_pct": 3.08,
+        "avg_loss_pct": -2.06,
+        "profit_factor": 0.69,
+        "sharpe": -0.55
+      },
+      "out_of_sample_double_costs_return_pct": -31.79,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 72
+          },
+          "train_sharpe": 1.34,
+          "return_pct": 2.73,
+          "trades": 17,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 72
+          },
+          "train_sharpe": 0.38,
+          "return_pct": -13.15,
+          "trades": 18,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 168
+          },
+          "train_sharpe": 0.4,
+          "return_pct": -23.11,
+          "trades": 11,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 72
+          },
+          "train_sharpe": -1.61,
+          "return_pct": 1.93,
+          "trades": 14,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 72
+          },
+          "train_sharpe": -1.04,
+          "return_pct": 13.35,
+          "trades": 16,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "donchian_breakout (3% stop)": {
+      "strategy": "donchian_breakout",
+      "family": "Breakout",
+      "label": "Donchian channel breakout",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -13.08,
+        "max_drawdown_pct": -34.72,
+        "trades": 36,
+        "win_rate": 30.56,
+        "avg_win_pct": 3.37,
+        "avg_loss_pct": -1.92,
+        "profit_factor": 0.77,
+        "sharpe": -0.55
+      },
+      "out_of_sample_double_costs_return_pct": -6.25,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 12
+          },
+          "train_sharpe": 1.46,
+          "return_pct": -4.43,
+          "trades": 13,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 72
+          },
+          "train_sharpe": 0.87,
+          "return_pct": -15.09,
+          "trades": 5,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 24
+          },
+          "train_sharpe": 0.56,
+          "return_pct": -2.38,
+          "trades": 5,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 24
+          },
+          "train_sharpe": -0.87,
+          "return_pct": -10.1,
+          "trades": 8,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 72
+          },
+          "train_sharpe": -1.76,
+          "return_pct": 22.05,
+          "trades": 5,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 2
+    },
+    "sma_cross (3% stop)": {
+      "strategy": "sma_cross",
+      "family": "Trend following",
+      "label": "SMA crossover (the current bot's family)",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -20.9,
+        "max_drawdown_pct": -39.37,
+        "trades": 73,
+        "win_rate": 31.51,
+        "avg_win_pct": 3.07,
+        "avg_loss_pct": -2.07,
+        "profit_factor": 0.68,
+        "sharpe": -0.58
+      },
+      "out_of_sample_double_costs_return_pct": -32.14,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 72
+          },
+          "train_sharpe": 0.54,
+          "return_pct": 5.62,
+          "trades": 17,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 168
+          },
+          "train_sharpe": -0.09,
+          "return_pct": -18.51,
+          "trades": 8,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 72
+          },
+          "train_sharpe": 0.19,
+          "return_pct": -18.77,
+          "trades": 18,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 72
+          },
+          "train_sharpe": -1.6,
+          "return_pct": 1.57,
+          "trades": 14,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 72
+          },
+          "train_sharpe": -1.05,
+          "return_pct": 11.39,
+          "trades": 16,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "price_above_sma (no stop)": {
+      "strategy": "price_above_sma",
+      "family": "Trend following",
+      "label": "Hold while price is above its long average",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -22.38,
+        "max_drawdown_pct": -45.0,
+        "trades": 100,
+        "win_rate": 6.0,
+        "avg_win_pct": 6.72,
+        "avg_loss_pct": -0.87,
+        "profit_factor": 0.49,
+        "sharpe": -0.7
+      },
+      "out_of_sample_double_costs_return_pct": -42.8,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": 0.24,
+          "return_pct": -2.18,
+          "trades": 26,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": -0.25,
+          "return_pct": -18.74,
+          "trades": 11,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "window": 336
+          },
+          "train_sharpe": -1.58,
+          "return_pct": -19.45,
+          "trades": 38,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": -2.35,
+          "return_pct": 9.94,
+          "trades": 2,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "window": 720
+          },
+          "train_sharpe": -0.52,
+          "return_pct": 10.26,
+          "trades": 23,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "ema_cross (3% stop)": {
+      "strategy": "ema_cross",
+      "family": "Trend following",
+      "label": "EMA crossover",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -23.08,
+        "max_drawdown_pct": -43.11,
+        "trades": 47,
+        "win_rate": 23.4,
+        "avg_win_pct": 4.43,
+        "avg_loss_pct": -2.31,
+        "profit_factor": 0.59,
+        "sharpe": -0.74
+      },
+      "out_of_sample_double_costs_return_pct": -33.61,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 168
+          },
+          "train_sharpe": 0.83,
+          "return_pct": 14.19,
+          "trades": 8,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 168
+          },
+          "train_sharpe": 0.78,
+          "return_pct": -24.66,
+          "trades": 13,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 168
+          },
+          "train_sharpe": 0.36,
+          "return_pct": -19.42,
+          "trades": 14,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 168
+          },
+          "train_sharpe": -2.3,
+          "return_pct": 1.89,
+          "trades": 5,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 168
+          },
+          "train_sharpe": -2.05,
+          "return_pct": 8.91,
+          "trades": 7,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 4
+    },
+    "ema_cross (no stop)": {
+      "strategy": "ema_cross",
+      "family": "Trend following",
+      "label": "EMA crossover",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -29.94,
+        "max_drawdown_pct": -46.56,
+        "trades": 55,
+        "win_rate": 20.0,
+        "avg_win_pct": 4.46,
+        "avg_loss_pct": -2.11,
+        "profit_factor": 0.53,
+        "sharpe": -0.99
+      },
+      "out_of_sample_double_costs_return_pct": -34.15,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 72
+          },
+          "train_sharpe": 0.79,
+          "return_pct": 4.71,
+          "trades": 16,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 168
+          },
+          "train_sharpe": 0.46,
+          "return_pct": -25.42,
+          "trades": 13,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "short": 24,
+            "long": 168
+          },
+          "train_sharpe": 0.27,
+          "return_pct": -20.21,
+          "trades": 14,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 168
+          },
+          "train_sharpe": -2.23,
+          "return_pct": 0.98,
+          "trades": 5,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "short": 48,
+            "long": 168
+          },
+          "train_sharpe": -2.04,
+          "return_pct": 11.35,
+          "trades": 7,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "bollinger_reversion (no stop)": {
+      "strategy": "bollinger_reversion",
+      "family": "Mean reversion",
+      "label": "Bollinger band bounce",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -33.76,
+        "max_drawdown_pct": -46.01,
+        "trades": 86,
+        "win_rate": 56.98,
+        "avg_win_pct": 1.2,
+        "avg_loss_pct": -2.6,
+        "profit_factor": 0.61,
+        "sharpe": -1.21
+      },
+      "out_of_sample_double_costs_return_pct": -47.84,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": 0.57,
+          "return_pct": -0.25,
+          "trades": 16,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.0
+          },
+          "train_sharpe": 0.19,
+          "return_pct": -13.85,
+          "trades": 19,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -0.63,
+          "return_pct": -17.7,
+          "trades": 15,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -1.72,
+          "return_pct": -12.59,
+          "trades": 13,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.0
+          },
+          "train_sharpe": -2.18,
+          "return_pct": 7.15,
+          "trades": 23,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 2
+    },
+    "momentum (3% stop)": {
+      "strategy": "momentum",
+      "family": "Momentum",
+      "label": "Time-series momentum",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -34.79,
+        "max_drawdown_pct": -53.1,
+        "trades": 153,
+        "win_rate": 16.34,
+        "avg_win_pct": 2.25,
+        "avg_loss_pct": -0.85,
+        "profit_factor": 0.51,
+        "sharpe": -1.27
+      },
+      "out_of_sample_double_costs_return_pct": -59.08,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": 0.55,
+          "return_pct": -7.95,
+          "trades": 34,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": -0.87,
+          "return_pct": -17.79,
+          "trades": 24,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "lookback": 168
+          },
+          "train_sharpe": -1.5,
+          "return_pct": -17.14,
+          "trades": 38,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": -2.89,
+          "return_pct": -1.48,
+          "trades": 16,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": -1.21,
+          "return_pct": 5.56,
+          "trades": 41,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "momentum (no stop)": {
+      "strategy": "momentum",
+      "family": "Momentum",
+      "label": "Time-series momentum",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -37.4,
+        "max_drawdown_pct": -54.97,
+        "trades": 153,
+        "win_rate": 16.34,
+        "avg_win_pct": 2.25,
+        "avg_loss_pct": -0.88,
+        "profit_factor": 0.5,
+        "sharpe": -1.34
+      },
+      "out_of_sample_double_costs_return_pct": -51.33,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": 0.99,
+          "return_pct": -7.95,
+          "trades": 34,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": -0.63,
+          "return_pct": -21.08,
+          "trades": 24,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "lookback": 168
+          },
+          "train_sharpe": -1.6,
+          "return_pct": -17.14,
+          "trades": 38,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": -2.4,
+          "return_pct": -1.48,
+          "trades": 16,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "lookback": 336
+          },
+          "train_sharpe": -0.97,
+          "return_pct": 5.56,
+          "trades": 41,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "bollinger_reversion (3% stop)": {
+      "strategy": "bollinger_reversion",
+      "family": "Mean reversion",
+      "label": "Bollinger band bounce",
+      "stop_loss": 0.03,
+      "out_of_sample": {
+        "return_pct": -29.64,
+        "max_drawdown_pct": -39.7,
+        "trades": 72,
+        "win_rate": 54.17,
+        "avg_win_pct": 1.28,
+        "avg_loss_pct": -2.52,
+        "profit_factor": 0.6,
+        "sharpe": -1.59
+      },
+      "out_of_sample_double_costs_return_pct": -43.33,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -0.01,
+          "return_pct": -4.24,
+          "trades": 16,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -0.09,
+          "return_pct": -19.78,
+          "trades": 15,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -1.79,
+          "return_pct": -8.0,
+          "trades": 15,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -2.51,
+          "return_pct": -6.13,
+          "trades": 13,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "window": 48,
+            "k": 2.5
+          },
+          "train_sharpe": -2.63,
+          "return_pct": 6.06,
+          "trades": 13,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 3
+    },
+    "donchian_breakout (no stop)": {
+      "strategy": "donchian_breakout",
+      "family": "Breakout",
+      "label": "Donchian channel breakout",
+      "stop_loss": null,
+      "out_of_sample": {
+        "return_pct": -33.93,
+        "max_drawdown_pct": -44.45,
+        "trades": 55,
+        "win_rate": 29.09,
+        "avg_win_pct": 2.58,
+        "avg_loss_pct": -1.99,
+        "profit_factor": 0.53,
+        "sharpe": -1.67
+      },
+      "out_of_sample_double_costs_return_pct": -13.48,
+      "folds": [
+        {
+          "test_period": "2025-07-08 11:00:00 to 2025-10-06 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 12
+          },
+          "train_sharpe": 1.45,
+          "return_pct": -4.43,
+          "trades": 13,
+          "buy_hold_pct": 13.57
+        },
+        {
+          "test_period": "2025-10-06 11:00:00 to 2026-01-04 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 72
+          },
+          "train_sharpe": 0.77,
+          "return_pct": -23.41,
+          "trades": 5,
+          "buy_hold_pct": -26.34
+        },
+        {
+          "test_period": "2026-01-04 11:00:00 to 2026-04-04 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 24
+          },
+          "train_sharpe": 0.55,
+          "return_pct": -3.26,
+          "trades": 5,
+          "buy_hold_pct": -26.89
+        },
+        {
+          "test_period": "2026-04-04 11:00:00 to 2026-07-03 10:00:00",
+          "chosen_params": {
+            "entry": 168,
+            "exit_": 24
+          },
+          "train_sharpe": -0.97,
+          "return_pct": -10.1,
+          "trades": 8,
+          "buy_hold_pct": -8.09
+        },
+        {
+          "test_period": "2026-07-03 11:00:00 to 2026-10-01 10:00:00",
+          "chosen_params": {
+            "entry": 24,
+            "exit_": 24
+          },
+          "train_sharpe": -1.89,
+          "return_pct": 3.79,
+          "trades": 24,
+          "buy_hold_pct": 35.21
+        }
+      ],
+      "folds_beating_buy_hold": 2
+    }
+  }
+}
