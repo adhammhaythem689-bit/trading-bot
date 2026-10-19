@@ -6,6 +6,12 @@ on:
     # extra runs are harmless (no new candle -> nothing written, no commit)
     - cron: "7,22,37,52 * * * *"
   workflow_dispatch: {}     # lets you trigger it manually from the Actions tab
+  # An external pinger (e.g. cron-job.org, free, no card) can POST to
+  # https://api.github.com/repos/<owner>/<repo>/dispatches with
+  # {"event_type":"tick"} and a GitHub token. GitHub's own schedule above
+  # drops most 15-min slots in practice; this gives a second, reliable way in.
+  repository_dispatch:
+    types: [tick]
 
 permissions:
   contents: write
