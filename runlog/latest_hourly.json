@@ -1,8 +1,8 @@
 {
   "run_type": "hourly",
-  "run_id": "hourly-20261018T223836Z",
-  "started_at": "2026-10-18T22:38:36.507653+00:00",
-  "finished_at": "2026-10-18T22:38:39.970341+00:00",
+  "run_id": "hourly-20261019T003339Z",
+  "started_at": "2026-10-19T00:33:39.873110+00:00",
+  "finished_at": "2026-10-19T00:33:42.485251+00:00",
   "status": "done",
   "summary": "hold",
   "trigger": "schedule",
@@ -12,14 +12,14 @@
       "employee": "price_fetcher",
       "description": "Pull the latest hourly BTC/USD candles from Kraken",
       "status": "done",
-      "started_at": "2026-10-18T22:38:36.507689+00:00",
-      "finished_at": "2026-10-18T22:38:38.766107+00:00",
-      "duration_ms": 2258,
+      "started_at": "2026-10-19T00:33:39.873147+00:00",
+      "finished_at": "2026-10-19T00:33:42.103436+00:00",
+      "duration_ms": 2230,
       "outputs": {
         "source": "Kraken BTC/USD",
         "closed_candles": 201,
-        "latest_closed_candle": "2026-10-18 21:00:00",
-        "latest_close": 81121.2,
+        "latest_closed_candle": "2026-10-18 23:00:00",
+        "latest_close": 82001.7,
         "note": "The hour still in progress is left out until it closes"
       },
       "error": null
@@ -29,9 +29,9 @@
       "employee": "data_checker",
       "description": "Check the candles for gaps, duplicates and bad prices",
       "status": "done",
-      "started_at": "2026-10-18T22:38:38.766127+00:00",
-      "finished_at": "2026-10-18T22:38:38.768114+00:00",
-      "duration_ms": 1,
+      "started_at": "2026-10-19T00:33:42.103457+00:00",
+      "finished_at": "2026-10-19T00:33:42.105465+00:00",
+      "duration_ms": 2,
       "outputs": {
         "rows_checked": 201,
         "warnings": [],
@@ -44,15 +44,15 @@
       "employee": "indicator_analyst",
       "description": "Compute the 24h and 72h moving averages",
       "status": "done",
-      "started_at": "2026-10-18T22:38:38.768130+00:00",
-      "finished_at": "2026-10-18T22:38:38.773063+00:00",
+      "started_at": "2026-10-19T00:33:42.105482+00:00",
+      "finished_at": "2026-10-19T00:33:42.110397+00:00",
       "duration_ms": 4,
       "outputs": {
-        "candle": "2026-10-18 21:00:00",
-        "close": 81121.2,
-        "short_ma": 81442.9,
-        "long_ma": 81581.06,
-        "gap_pct": -0.169,
+        "candle": "2026-10-18 23:00:00",
+        "close": 82001.7,
+        "short_ma": 81485.83,
+        "long_ma": 81569.5,
+        "gap_pct": -0.103,
         "windows": "24h / 72h"
       },
       "error": null
@@ -62,8 +62,8 @@
       "employee": "signal_watcher",
       "description": "Check whether the averages crossed this hour",
       "status": "done",
-      "started_at": "2026-10-18T22:38:38.773581+00:00",
-      "finished_at": "2026-10-18T22:38:38.774082+00:00",
+      "started_at": "2026-10-19T00:33:42.110940+00:00",
+      "finished_at": "2026-10-19T00:33:42.111413+00:00",
       "duration_ms": 0,
       "outputs": {
         "crossover": "none",
@@ -79,8 +79,8 @@
       "employee": "risk_officer",
       "description": "Check drawdown against the kill switch and the stop-loss",
       "status": "done",
-      "started_at": "2026-10-18T22:38:38.774096+00:00",
-      "finished_at": "2026-10-18T22:38:38.774146+00:00",
+      "started_at": "2026-10-19T00:33:42.111428+00:00",
+      "finished_at": "2026-10-19T00:33:42.111479+00:00",
       "duration_ms": 0,
       "outputs": {
         "equity": 1000.0,
@@ -97,17 +97,17 @@
       "employee": "news_reader",
       "description": "Read crypto headlines and score their sentiment",
       "status": "done",
-      "started_at": "2026-10-18T22:38:38.774155+00:00",
-      "finished_at": "2026-10-18T22:38:39.715386+00:00",
-      "duration_ms": 941,
+      "started_at": "2026-10-19T00:33:42.111489+00:00",
+      "finished_at": "2026-10-19T00:33:42.408190+00:00",
+      "duration_ms": 296,
       "outputs": {
         "headlines": 40,
         "sentiment": "neutral",
-        "score": -0.0828,
+        "score": -0.0841,
         "sample": [
+          "SEC tokenized stock framework faces issuer pushback as Broadcom, Verizon object to OKX-ICE listing",
           "The White House's crypto chief departs: State of Crypto",
-          "Wall Street freaked out Friday. VIX and bitcoin say the fear may fade Monday.",
-          "Latvia eyes crypto tax payments in 2027 as parliament overhauls crypto taxation"
+          "Wall Street freaked out Friday, but VIX and bitcoin trades say the fear may fade Monday."
         ],
         "feeds_failed": [],
         "used_for_decisions": "no, logged for future research only"
@@ -119,12 +119,12 @@
       "employee": "mood_analyst",
       "description": "Read the Crypto Fear & Greed index",
       "status": "done",
-      "started_at": "2026-10-18T22:38:39.715411+00:00",
-      "finished_at": "2026-10-18T22:38:39.969544+00:00",
-      "duration_ms": 254,
+      "started_at": "2026-10-19T00:33:42.408214+00:00",
+      "finished_at": "2026-10-19T00:33:42.484413+00:00",
+      "duration_ms": 76,
       "outputs": {
-        "value": 53,
-        "label": "Neutral",
+        "value": 59,
+        "label": "Greed",
         "used_for_decisions": "no, logged for future research only"
       },
       "error": null
@@ -134,12 +134,12 @@
       "employee": "trader",
       "description": "Decide buy / sell / hold and update the paper portfolio",
       "status": "done",
-      "started_at": "2026-10-18T22:38:39.969570+00:00",
-      "finished_at": "2026-10-18T22:38:39.969757+00:00",
+      "started_at": "2026-10-19T00:33:42.484443+00:00",
+      "finished_at": "2026-10-19T00:33:42.484633+00:00",
       "duration_ms": 0,
       "outputs": {
         "decision": "hold",
-        "price": 81121.2,
+        "price": 82001.7,
         "cash_before": 1000.0,
         "cash_after": 1000.0,
         "btc_after": 0.0,
@@ -153,8 +153,8 @@
       "employee": "record_keeper",
       "description": "Save the portfolio and logs for GitHub to commit",
       "status": "done",
-      "started_at": "2026-10-18T22:38:39.969769+00:00",
-      "finished_at": "2026-10-18T22:38:39.970246+00:00",
+      "started_at": "2026-10-19T00:33:42.484645+00:00",
+      "finished_at": "2026-10-19T00:33:42.485145+00:00",
       "duration_ms": 0,
       "outputs": {
         "files": [
