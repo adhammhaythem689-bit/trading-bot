@@ -56,15 +56,56 @@ LEARNED_FILTERS_FILE = "learned_filters.json"
 exchange = ccxt.kraken()
 
 
+STATE_FIELDS = {
+    "cash": (int, float), "btc": (int, float), "in_position": bool,
+    "entry_price": (int, float), "peak_equity": (int, float),
+    "trading_halted": bool,
+}
+
+
+class CorruptStateError(Exception):
+    """paper_state.json exists but isn't trustworthy. Never papered over by
+    quietly resetting to the starting balance -- that would erase real
+    account history because of a read error, not because the account
+    actually changed."""
+
+
+def validate_state(state):
+    if not isinstance(state, dict):
+        raise CorruptStateError(f"expected a JSON object, got {type(state).__name__}")
+    for field, types in STATE_FIELDS.items():
+        if field not in state:
+            raise CorruptStateError(f"missing required field '{field}'")
+        if not isinstance(state[field], types) or isinstance(state[field], bool) != (types is bool):
+            raise CorruptStateError(f"field '{field}' is {type(state[field]).__name__}, expected {types}")
+    if state["cash"] < 0:
+        raise CorruptStateError(f"cash is negative ({state['cash']})")
+    if state["btc"] < 0:
+        raise CorruptStateError(f"btc is negative ({state['btc']})")
+    if state["in_position"] and state["btc"] <= 0:
+        raise CorruptStateError("in_position is true but btc holding is zero")
+    return state
+
+
 def load_state():
-    if os.path.exists(STATE_FILE):
-        with open(STATE_FILE) as f:
-            return json.load(f)
-    return {
-        "cash": config.starting_balance, "btc": 0.0, "in_position": False,
-        "entry_price": 0.0, "peak_equity": config.starting_balance,
-        "trading_halted": False, "last_candle_ts": None,
-    }
+    """Load paper_state.json, or start a fresh account if (and only if) the
+    file has genuinely never existed. A file that exists but fails to parse
+    or validate is a bug or a disk problem, never treated the same as "no
+    account yet" -- that distinction is what stops a corrupted file from
+    silently erasing real trade history back to $1,000.
+    """
+    if not os.path.exists(STATE_FILE):
+        return {
+            "cash": config.starting_balance, "btc": 0.0, "in_position": False,
+            "entry_price": 0.0, "peak_equity": config.starting_balance,
+            "trading_halted": False, "last_candle_ts": None,
+        }
+    with open(STATE_FILE) as f:
+        try:
+            state = json.load(f)
+        except json.JSONDecodeError as e:
+            raise CorruptStateError(f"{STATE_FILE} is not valid JSON: {e}") from e
+    return validate_state(state)
 
 
 def save_state(state):
@@ -261,9 +302,26 @@ def seconds_until_next_hour():
     return 3600 - (now.minute * 60 + now.second)
 
 
+def report_corrupt_state(exc):
+    """A corrupt/malformed paper_state.json has to be as visible as any other
+    run failure, not a silent crash the city never hears about. Writes a
+    minimal error run log (no steps could even start) and re-raises so the
+    workflow step still fails and nothing gets committed over the real file."""
+    log = RunLogger("hourly", HOURLY_STEPS)
+    log.run["status"] = "error"
+    log.run["summary"] = f"Refused to run: {type(exc).__name__}: {exc}"
+    log.skip_remaining("Never started: paper_state.json failed validation before any step ran")
+    log.write()
+    print(f"FATAL: {STATE_FILE} failed validation, refusing to trade on it: {exc}", file=sys.stderr)
+
+
 if __name__ == "__main__":
     run_forever = "--once" not in sys.argv
-    state = load_state()
+    try:
+        state = load_state()
+    except CorruptStateError as exc:
+        report_corrupt_state(exc)
+        sys.exit(1)
     learned_filters, bins = load_learned_filters()
     print(f"Starting paper trader. Current state: {state}")
     print(f"Learned filters loaded: {len(learned_filters) if learned_filters else 0} combinations")

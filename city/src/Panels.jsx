@@ -1,7 +1,7 @@
 import { BUILDINGS, EMPLOYEES, RUN_SCHEDULES, employeesIn } from "./employees";
 import {
   STATUS_LABELS, STATUS_COLORS, employeeSteps, employeeStatus,
-  formatTime, formatValue, humanizeKey, timeAgo,
+  formatTime, formatValue, humanizeKey, timeAgo, triggerLabel,
 } from "./utils";
 
 const panelStyle = {
@@ -141,7 +141,7 @@ export function EmployeePanel({ employeeId, runs, snapshot, onClose }) {
       {run && (
         <Section title="Run">
           <Row label="Run id" value={run.run_id} />
-          <Row label="Triggered by" value={run.trigger === "schedule" ? "GitHub schedule" : run.trigger} />
+          <Row label="Triggered by" value={triggerLabel(run.trigger)} />
           <Row label="Outcome" value={run.summary || run.status} />
         </Section>
       )}

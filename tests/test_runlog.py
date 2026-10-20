@@ -12,6 +12,20 @@ def read_latest(tmp_path, run_type="test"):
         return json.load(f)
 
 
+def test_trigger_records_which_mechanism_started_the_run(tmp_path, monkeypatch):
+    # The watchdog/city need to tell a reliable external dispatch apart from
+    # GitHub's own flaky schedule, and both from a manual debug run.
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "repository_dispatch")
+    log = RunLogger("test", STEPS, run_dir=str(tmp_path))
+    assert log.run["trigger"] == "repository_dispatch"
+
+
+def test_trigger_defaults_to_local_outside_github_actions(tmp_path, monkeypatch):
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    log = RunLogger("test", STEPS, run_dir=str(tmp_path))
+    assert log.run["trigger"] == "local"
+
+
 def test_successful_run_records_every_step(tmp_path):
     log = RunLogger("test", STEPS, run_dir=str(tmp_path))
     for sid in ["a", "b", "c"]:

@@ -106,6 +106,20 @@ export function formatTime(iso) {
 export const HOURLY_LATE_MINUTES = 150;
 export const DAILY_LATE_MINUTES = 26 * 60;
 
+// run.trigger comes straight from GITHUB_EVENT_NAME (see engine/runlog.py).
+// GitHub's own cron drops most slots; "External pinger" is the one that's
+// actually reliable, so it's worth telling apart from a manual debug click.
+export const TRIGGER_LABELS = {
+  schedule: "GitHub schedule",
+  repository_dispatch: "External pinger (repository_dispatch)",
+  workflow_dispatch: "Triggered manually",
+  local: "Run locally, not on GitHub",
+};
+
+export function triggerLabel(trigger) {
+  return TRIGGER_LABELS[trigger] || trigger || "unknown";
+}
+
 export function humanizeKey(key) {
   return key.replace(/_/g, " ").replace(/\bpct\b/, "%").replace(/\bma\b/, "MA");
 }

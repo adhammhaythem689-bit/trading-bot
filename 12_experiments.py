@@ -48,6 +48,48 @@ def paths(exp_id):
     return base, os.path.join(base, "state.json"), os.path.join(base, "trades.csv")
 
 
+EXPERIMENT_STATE_FIELDS = {
+    "cash": (int, float), "btc": (int, float), "in_position": bool,
+    "entry_price": (int, float), "stopped": bool, "peak_equity": (int, float),
+    "halted": bool, "starting_cash": (int, float), "trades": int,
+}
+
+
+class CorruptStateError(Exception):
+    """An experiment's state.json exists but isn't trustworthy. Never treated
+    the same as a brand-new experiment -- that would quietly erase its real
+    trade history back to $1,000 because of a read error."""
+
+
+def validate_experiment_state(state):
+    if not isinstance(state, dict):
+        raise CorruptStateError(f"expected a JSON object, got {type(state).__name__}")
+    for field, types in EXPERIMENT_STATE_FIELDS.items():
+        if field not in state:
+            raise CorruptStateError(f"missing required field '{field}'")
+        if not isinstance(state[field], types) or isinstance(state[field], bool) != (types is bool):
+            raise CorruptStateError(f"field '{field}' is {type(state[field]).__name__}, expected {types}")
+    if state["cash"] < 0 or state["btc"] < 0:
+        raise CorruptStateError("cash or btc holding is negative")
+    if state["in_position"] and state["btc"] <= 0:
+        raise CorruptStateError("in_position is true but btc holding is zero")
+    return state
+
+
+def load_experiment_state(state_path, forming_open):
+    """Like paper_trade's load_state: missing file -> brand new experiment,
+    file that exists but fails to parse or validate -> CorruptStateError,
+    never silently treated as a fresh start."""
+    if not os.path.exists(state_path):
+        return new_state(start_price=forming_open, started_at=datetime.now(timezone.utc).isoformat())
+    with open(state_path) as f:
+        try:
+            state = json.load(f)
+        except json.JSONDecodeError as e:
+            raise CorruptStateError(f"{state_path} is not valid JSON: {e}") from e
+    return validate_experiment_state(state)
+
+
 def main():
     with open(CONFIG_FILE) as f:
         experiments = json.load(f)["experiments"]
@@ -55,24 +97,40 @@ def main():
     closed, forming_open = fetch()
     latest_closed = str(closed["timestamp"].iloc[-1])
 
+    log = RunLogger("experiments", [(e["id"], e["employee"], e["description"]) for e in experiments])
     states = {}
+    corrupt = set()
     for exp in experiments:
         _, state_path, _ = paths(exp["id"])
-        if os.path.exists(state_path):
-            with open(state_path) as f:
-                states[exp["id"]] = json.load(f)
-        else:
-            states[exp["id"]] = new_state(start_price=forming_open,
-                                          started_at=datetime.now(timezone.utc).isoformat())
+        try:
+            states[exp["id"]] = load_experiment_state(state_path, forming_open)
+        except CorruptStateError as e:
+            corrupt.add(exp["id"])
+            rec = log._by_id[exp["id"]]
+            rec["status"] = "error"
+            rec["error"] = f"{type(e).__name__}: {e}"
+            print(f"{exp['id']}: refusing to trade on corrupt state -- {e}")
 
-    if all(s["last_candle_ts"] == latest_closed for s in states.values()):
-        print(f"No new hourly candle since {latest_closed}, nothing to do.")
-        return 0  # nothing written, so no commit
+    live = [e for e in experiments if e["id"] not in corrupt]
+    if corrupt and not live:
+        log.finish("error", f"All experiment states failed validation: {sorted(corrupt)}")
+        log.write()
+        return 1
 
-    log = RunLogger("experiments", [(e["id"], e["employee"], e["description"]) for e in experiments])
-    failures = 0
+    if live and all(states[e["id"]]["last_candle_ts"] == latest_closed for e in live):
+        if not corrupt:
+            print(f"No new hourly candle since {latest_closed}, nothing to do.")
+            return 0  # nothing written, so no commit
+        # at least one experiment is corrupt and needs reporting even though
+        # the healthy ones have nothing new to do
+        log.skip_remaining(f"No new candle since {latest_closed}; skipped experiments are unaffected")
+        log.finish("error", f"{len(corrupt)} experiment(s) have corrupt state: {sorted(corrupt)}")
+        log.write()
+        return 1
+
+    failures = len(corrupt)
     try:
-        for exp in experiments:
+        for exp in live:
             state = states[exp["id"]]
             try:
                 with log.step(exp["id"]) as s:

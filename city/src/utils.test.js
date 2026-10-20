@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   isSnapshotStale, employeeStatus, employeeSteps, nextHourlyRun, nextDailyRun, timeAgo, formatValue,
-  previousHourlySlot, isRunDue,
+  previousHourlySlot, isRunDue, triggerLabel,
 } from "./utils";
 
 describe("isSnapshotStale", () => {
@@ -78,6 +78,18 @@ describe("schedule helpers", () => {
     expect(timeAgo("2026-01-01T11:48:00Z", now)).toBe("12 min ago");
     expect(timeAgo("2026-01-01T09:00:00Z", now)).toBe("3 h ago");
     expect(timeAgo(null, now)).toBe("never");
+  });
+});
+
+describe("triggerLabel", () => {
+  it("tells apart the reliable external pinger from GitHub's flaky schedule", () => {
+    expect(triggerLabel("repository_dispatch")).toMatch(/external pinger/i);
+    expect(triggerLabel("schedule")).toMatch(/github schedule/i);
+    expect(triggerLabel("workflow_dispatch")).toMatch(/manually/i);
+  });
+  it("falls back to the raw value for anything unrecognized, never blank", () => {
+    expect(triggerLabel("something_new")).toBe("something_new");
+    expect(triggerLabel(undefined)).toBe("unknown");
   });
 });
 
