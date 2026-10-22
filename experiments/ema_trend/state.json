@@ -1,15 +1,15 @@
 {
-  "cash": 0.0,
-  "btc": 0.012027541081551185,
-  "in_position": true,
-  "entry_price": 83017.8,
+  "cash": 975.726220207594,
+  "btc": 0.0,
+  "in_position": false,
+  "entry_price": 0.0,
   "stopped": false,
   "peak_equity": 1019.7574761075335,
   "halted": false,
-  "last_candle_ts": "2026-10-22 21:00:00",
+  "last_candle_ts": "2026-10-22 22:00:00",
   "start_price": 81121.2,
   "started_at": "2026-10-18T22:38:43.117218+00:00",
   "starting_cash": 1000.0,
-  "trades": 0,
+  "trades": 1,
   "cost_basis": 1000.0
 }
