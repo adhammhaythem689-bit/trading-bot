@@ -216,9 +216,9 @@
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=night|trend=weak|volume=high": {
-    "n": 3,
-    "win_rate": 33.3,
-    "avg_pnl_pct": -0.03,
+    "n": 4,
+    "win_rate": 25.0,
+    "avg_pnl_pct": -0.4,
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=night|trend=weak|volume=low": {
