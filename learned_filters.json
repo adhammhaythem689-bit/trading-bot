@@ -204,9 +204,9 @@
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=morning|trend=weak|volume=low": {
-    "n": 3,
-    "win_rate": 33.3,
-    "avg_pnl_pct": -1.19,
+    "n": 2,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -1.79,
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=night|trend=strong|volume=high": {
@@ -300,9 +300,9 @@
     "reliable": false
   },
   "volatility=medium|momentum=weak|hour=morning|trend=weak|volume=low": {
-    "n": 2,
-    "win_rate": 0.0,
-    "avg_pnl_pct": -1.33,
+    "n": 3,
+    "win_rate": 33.3,
+    "avg_pnl_pct": -0.88,
     "reliable": false
   },
   "volatility=medium|momentum=weak|hour=night|trend=strong|volume=high": {
