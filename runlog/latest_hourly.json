@@ -1,8 +1,8 @@
 {
   "run_type": "hourly",
-  "run_id": "hourly-20261028T120056Z",
-  "started_at": "2026-10-28T12:00:56.790916+00:00",
-  "finished_at": "2026-10-28T12:00:59.681739+00:00",
+  "run_id": "hourly-20261028T130100Z",
+  "started_at": "2026-10-28T13:01:00.986924+00:00",
+  "finished_at": "2026-10-28T13:01:03.926047+00:00",
   "status": "done",
   "summary": "hold",
   "trigger": "repository_dispatch",
@@ -12,14 +12,14 @@
       "employee": "price_fetcher",
       "description": "Pull the latest hourly BTC/USD candles from Kraken",
       "status": "done",
-      "started_at": "2026-10-28T12:00:56.790949+00:00",
-      "finished_at": "2026-10-28T12:00:59.017553+00:00",
-      "duration_ms": 2226,
+      "started_at": "2026-10-28T13:01:00.986961+00:00",
+      "finished_at": "2026-10-28T13:01:03.367077+00:00",
+      "duration_ms": 2380,
       "outputs": {
         "source": "Kraken BTC/USD",
         "closed_candles": 201,
-        "latest_closed_candle": "2026-10-28 11:00:00",
-        "latest_close": 81207.5,
+        "latest_closed_candle": "2026-10-28 12:00:00",
+        "latest_close": 80620.8,
         "note": "The hour still in progress is left out until it closes"
       },
       "error": null
@@ -29,9 +29,9 @@
       "employee": "data_checker",
       "description": "Check the candles for gaps, duplicates and bad prices",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.017573+00:00",
-      "finished_at": "2026-10-28T12:00:59.019449+00:00",
-      "duration_ms": 1,
+      "started_at": "2026-10-28T13:01:03.367097+00:00",
+      "finished_at": "2026-10-28T13:01:03.369105+00:00",
+      "duration_ms": 2,
       "outputs": {
         "rows_checked": 201,
         "warnings": [],
@@ -44,15 +44,15 @@
       "employee": "indicator_analyst",
       "description": "Compute the 24h and 72h moving averages",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.019467+00:00",
-      "finished_at": "2026-10-28T12:00:59.023850+00:00",
+      "started_at": "2026-10-28T13:01:03.369122+00:00",
+      "finished_at": "2026-10-28T13:01:03.374077+00:00",
       "duration_ms": 4,
       "outputs": {
-        "candle": "2026-10-28 11:00:00",
-        "close": 81207.5,
-        "short_ma": 80754.41,
-        "long_ma": 80278.12,
-        "gap_pct": 0.593,
+        "candle": "2026-10-28 12:00:00",
+        "close": 80620.8,
+        "short_ma": 80770.56,
+        "long_ma": 80281.9,
+        "gap_pct": 0.609,
         "windows": "24h / 72h"
       },
       "error": null
@@ -62,8 +62,8 @@
       "employee": "signal_watcher",
       "description": "Check whether the averages crossed this hour",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.024330+00:00",
-      "finished_at": "2026-10-28T12:00:59.024737+00:00",
+      "started_at": "2026-10-28T13:01:03.374633+00:00",
+      "finished_at": "2026-10-28T13:01:03.375104+00:00",
       "duration_ms": 0,
       "outputs": {
         "crossover": "none",
@@ -79,18 +79,18 @@
       "employee": "risk_officer",
       "description": "Check drawdown against the kill switch and the stop-loss",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.024750+00:00",
-      "finished_at": "2026-10-28T12:00:59.024808+00:00",
+      "started_at": "2026-10-28T13:01:03.375119+00:00",
+      "finished_at": "2026-10-28T13:01:03.375180+00:00",
       "duration_ms": 0,
       "outputs": {
-        "equity": 990.76,
+        "equity": 985.99,
         "peak_equity": 1016.27,
-        "drawdown_pct": -2.51,
+        "drawdown_pct": -2.98,
         "kill_switch_at_pct": -20.0,
         "trading_halted": false,
         "entry_price": 80835.4,
         "stop_loss_price": 78410.34,
-        "distance_to_stop_pct": 3.44
+        "distance_to_stop_pct": 2.74
       },
       "error": null
     },
@@ -99,17 +99,17 @@
       "employee": "news_reader",
       "description": "Read crypto headlines and score their sentiment",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.024816+00:00",
-      "finished_at": "2026-10-28T12:00:59.560479+00:00",
-      "duration_ms": 535,
+      "started_at": "2026-10-28T13:01:03.375190+00:00",
+      "finished_at": "2026-10-28T13:01:03.693924+00:00",
+      "duration_ms": 318,
       "outputs": {
         "headlines": 40,
         "sentiment": "neutral",
-        "score": -0.0108,
+        "score": -0.0103,
         "sample": [
+          "JPMorgan, Coca-Cola, Dell also say 'no' to OKX-ICE tokenized tock trading plan",
           "Dissent and more: 3 things to watch for at the Fed meeting",
-          "XRP Ledger developers propose creating wallets with zero XRP for stablecoin payments",
-          "Bitcoin rebounds above $81,000 as Asian chip rally spills into crypto, pepe jumps 9%"
+          "XRP Ledger developers propose creating wallets with zero XRP for stablecoin payments"
         ],
         "feeds_failed": [],
         "used_for_decisions": "no, logged for future research only"
@@ -121,9 +121,9 @@
       "employee": "mood_analyst",
       "description": "Read the Crypto Fear & Greed index",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.560505+00:00",
-      "finished_at": "2026-10-28T12:00:59.680951+00:00",
-      "duration_ms": 120,
+      "started_at": "2026-10-28T13:01:03.693950+00:00",
+      "finished_at": "2026-10-28T13:01:03.925152+00:00",
+      "duration_ms": 231,
       "outputs": {
         "value": 51,
         "label": "Neutral",
@@ -136,16 +136,16 @@
       "employee": "trader",
       "description": "Decide buy / sell / hold and update the paper portfolio",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.680976+00:00",
-      "finished_at": "2026-10-28T12:00:59.681180+00:00",
+      "started_at": "2026-10-28T13:01:03.925182+00:00",
+      "finished_at": "2026-10-28T13:01:03.925557+00:00",
       "duration_ms": 0,
       "outputs": {
         "decision": "hold",
-        "price": 81207.5,
+        "price": 80620.8,
         "cash_before": 329.46,
         "cash_after": 329.46,
         "btc_after": 0.00814334,
-        "equity": 990.76,
+        "equity": 985.99,
         "in_position": true
       },
       "error": null
@@ -155,8 +155,8 @@
       "employee": "record_keeper",
       "description": "Save the portfolio and logs for GitHub to commit",
       "status": "done",
-      "started_at": "2026-10-28T12:00:59.681192+00:00",
-      "finished_at": "2026-10-28T12:00:59.681632+00:00",
+      "started_at": "2026-10-28T13:01:03.925570+00:00",
+      "finished_at": "2026-10-28T13:01:03.925940+00:00",
       "duration_ms": 0,
       "outputs": {
         "files": [
