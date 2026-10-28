@@ -1,9 +1,9 @@
 {
-  "cash": 988.3937533925488,
-  "btc": 0.0,
-  "in_position": false,
-  "entry_price": 82681.2,
+  "cash": 329.46458446418285,
+  "btc": 0.0081433411569614,
+  "in_position": true,
+  "entry_price": 80835.4,
   "peak_equity": 1016.2722674562054,
   "trading_halted": false,
-  "last_candle_ts": "2026-10-28 01:00:00"
+  "last_candle_ts": "2026-10-28 02:00:00"
 }
