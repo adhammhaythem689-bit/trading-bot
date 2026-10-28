@@ -144,15 +144,15 @@
     "reliable": false
   },
   "volatility=low|momentum=strong|hour=night|trend=strong|volume=low": {
-    "n": 1,
-    "win_rate": 100.0,
-    "avg_pnl_pct": 2.89,
+    "n": 2,
+    "win_rate": 50.0,
+    "avg_pnl_pct": 1.22,
     "reliable": false
   },
   "volatility=low|momentum=strong|hour=night|trend=weak|volume=low": {
-    "n": 2,
+    "n": 1,
     "win_rate": 0.0,
-    "avg_pnl_pct": -0.94,
+    "avg_pnl_pct": -1.44,
     "reliable": false
   },
   "volatility=low|momentum=weak|hour=afternoon|trend=strong|volume=high": {
