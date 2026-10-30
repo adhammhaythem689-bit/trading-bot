@@ -215,6 +215,12 @@
     "avg_pnl_pct": 0.72,
     "reliable": false
   },
+  "volatility=low|momentum=weak|hour=night|trend=strong|volume=low": {
+    "n": 1,
+    "win_rate": 0.0,
+    "avg_pnl_pct": -2.59,
+    "reliable": false
+  },
   "volatility=low|momentum=weak|hour=night|trend=weak|volume=high": {
     "n": 4,
     "win_rate": 25.0,
