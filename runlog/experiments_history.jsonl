@@ -1,4 +1,3 @@
-{"run_id": "experiments-20261022T040110Z", "started_at": "2026-10-22T04:01:10.815657+00:00", "finished_at": "2026-10-22T04:01:10.823154+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-22 03:00:00 candle"}
 {"run_id": "experiments-20261022T050106Z", "started_at": "2026-10-22T05:01:06.743319+00:00", "finished_at": "2026-10-22T05:01:06.749044+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-22 04:00:00 candle"}
 {"run_id": "experiments-20261022T060059Z", "started_at": "2026-10-22T06:00:59.714479+00:00", "finished_at": "2026-10-22T06:00:59.721871+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-22 05:00:00 candle"}
 {"run_id": "experiments-20261022T070058Z", "started_at": "2026-10-22T07:00:58.042902+00:00", "finished_at": "2026-10-22T07:00:58.049715+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-22 06:00:00 candle"}
@@ -198,3 +197,4 @@
 {"run_id": "experiments-20261030T090108Z", "started_at": "2026-10-30T09:01:08.979337+00:00", "finished_at": "2026-10-30T09:01:08.984653+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-30 08:00:00 candle"}
 {"run_id": "experiments-20261030T100101Z", "started_at": "2026-10-30T10:01:01.313158+00:00", "finished_at": "2026-10-30T10:01:01.323927+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-30 09:00:00 candle"}
 {"run_id": "experiments-20261030T110055Z", "started_at": "2026-10-30T11:00:55.023109+00:00", "finished_at": "2026-10-30T11:00:55.027038+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-30 10:00:00 candle"}
+{"run_id": "experiments-20261030T120057Z", "started_at": "2026-10-30T12:00:57.569977+00:00", "finished_at": "2026-10-30T12:00:57.575706+00:00", "status": "done", "summary": "3/3 experiments updated at the 2026-10-30 11:00:00 candle"}
