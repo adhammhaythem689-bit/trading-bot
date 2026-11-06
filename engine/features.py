@@ -59,21 +59,21 @@ def bucket(value, edges, labels):
 
 
 def compute_bins(df):
-    """Compute quantile bin edges from a dataframe (fit on TRAINING data only)."""
+    """Compute quantile bin edges from a dataframe (fit on TRAINING data only).
+
+    Only volatility is binned (3 buckets). The full 5-dimension version
+    (volatility x momentum x hour x trend x volume = 96 combinations) spread
+    ~110 historical trades so thin that no bucket could ever reach
+    min_samples within a realistic amount of trading history -- see
+    07_analyze_trades.py's own "0 of 55 reliable" output. Cutting to one
+    dimension is what makes the self-learning filter capable of producing a
+    trusted answer at all, instead of being structurally stuck forever.
+    """
     return {
         "volatility": df["volatility"].quantile([0, 1/3, 2/3, 1]).values,
-        "momentum": df["momentum_pct"].quantile([0, 0.5, 1]).values,
-        "trend": df["trend_strength"].quantile([0, 0.5, 1]).values,
-        "volume": df["volume_ratio"].quantile([0, 0.5, 1]).values,
     }
 
 
 def condition_combo(row, bins):
     """The "pattern fingerprint" string for a single row, given fitted bins."""
-    return (
-        "volatility=" + bucket(row["volatility"], bins["volatility"], ["low", "medium", "high"]) + "|"
-        + "momentum=" + bucket(row["momentum_pct"], bins["momentum"], ["weak", "strong"]) + "|"
-        + "hour=" + hour_bucket(row["hour"]) + "|"
-        + "trend=" + bucket(row["trend_strength"], bins["trend"], ["weak", "strong"]) + "|"
-        + "volume=" + bucket(row["volume_ratio"], bins["volume"], ["low", "high"])
-    )
+    return "volatility=" + bucket(row["volatility"], bins["volatility"], ["low", "medium", "high"])

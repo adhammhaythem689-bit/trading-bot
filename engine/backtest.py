@@ -81,7 +81,7 @@ def run_backtest(df, config, learned_filters=None, bins=None):
             if learned_filters is not None and bins is not None:
                 combo = condition_combo(row, bins)
                 info = learned_filters.get(combo)
-                if info and info["n"] >= config.min_samples and info["win_rate"] < config.win_rate_skip_threshold:
+                if info and info["n"] >= config.min_samples and info["avg_pnl_pct"] < config.avg_pnl_skip_threshold_pct:
                     take_trade = False
                     skipped_by_filter += 1
 
@@ -144,9 +144,9 @@ def step_decision(state, row, config, learned_filters=None, bins=None):
         if learned_filters is not None and bins is not None:
             combo = condition_combo(row, bins)
             info = learned_filters.get(combo)
-            if info and info["n"] >= config.min_samples and info["win_rate"] < config.win_rate_skip_threshold:
+            if info and info["n"] >= config.min_samples and info["avg_pnl_pct"] < config.avg_pnl_skip_threshold_pct:
                 take_trade = False
-                note = f"SKIPPED by filter ({combo}, win_rate={info['win_rate']:.1f}%, n={info['n']})"
+                note = f"SKIPPED by filter ({combo}, avg_pnl={info['avg_pnl_pct']:+.2f}%, n={info['n']})"
 
         if take_trade:
             trade_capital = decide_entry_size(state["cash"], price, config)
