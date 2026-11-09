@@ -1,8 +1,8 @@
 {
   "run_type": "hourly",
-  "run_id": "hourly-20261109T211542Z",
-  "started_at": "2026-11-09T21:15:42.819825+00:00",
-  "finished_at": "2026-11-09T21:15:55.031357+00:00",
+  "run_id": "hourly-20261109T213056Z",
+  "started_at": "2026-11-09T21:30:56.001927+00:00",
+  "finished_at": "2026-11-09T21:31:08.213676+00:00",
   "status": "error",
   "summary": "Failed at step 'fetch_prices': RequestTimeout: kraken GET https://api.kraken.com/0/public/OHLC?pair=XXBTZUSD&interval=60",
   "trigger": "repository_dispatch",
@@ -12,8 +12,8 @@
       "employee": "price_fetcher",
       "description": "Pull the latest hourly BTC/USD candles from Kraken",
       "status": "error",
-      "started_at": "2026-11-09T21:15:42.819861+00:00",
-      "finished_at": "2026-11-09T21:15:55.031324+00:00",
+      "started_at": "2026-11-09T21:30:56.001966+00:00",
+      "finished_at": "2026-11-09T21:31:08.213640+00:00",
       "duration_ms": 12211,
       "outputs": {},
       "error": "RequestTimeout: kraken GET https://api.kraken.com/0/public/OHLC?pair=XXBTZUSD&interval=60"
