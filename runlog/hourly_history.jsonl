@@ -1,4 +1,3 @@
-{"run_id": "hourly-20261101T130048Z", "started_at": "2026-11-01T13:00:48.332413+00:00", "finished_at": "2026-11-01T13:00:51.195092+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261101T140053Z", "started_at": "2026-11-01T14:00:53.786954+00:00", "finished_at": "2026-11-01T14:00:56.692545+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261101T150055Z", "started_at": "2026-11-01T15:00:55.091754+00:00", "finished_at": "2026-11-01T15:00:57.906248+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261101T160047Z", "started_at": "2026-11-01T16:00:47.364949+00:00", "finished_at": "2026-11-01T16:00:50.322416+00:00", "status": "done", "summary": "hold"}
@@ -198,3 +197,4 @@
 {"run_id": "hourly-20261109T180055Z", "started_at": "2026-11-09T18:00:55.992685+00:00", "finished_at": "2026-11-09T18:00:59.231629+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261109T190057Z", "started_at": "2026-11-09T19:00:57.484673+00:00", "finished_at": "2026-11-09T19:01:00.350599+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261109T200054Z", "started_at": "2026-11-09T20:00:54.093516+00:00", "finished_at": "2026-11-09T20:00:57.168089+00:00", "status": "done", "summary": "hold"}
+{"run_id": "hourly-20261109T210056Z", "started_at": "2026-11-09T21:00:56.082612+00:00", "finished_at": "2026-11-09T21:01:08.294081+00:00", "status": "error", "summary": "Failed at step 'fetch_prices': RequestTimeout: kraken GET https://api.kraken.com/0/public/OHLC?pair=XXBTZUSD&interval=60"}
