@@ -1,109 +1,169 @@
 {
   "run_type": "hourly",
-  "run_id": "hourly-20261109T213056Z",
-  "started_at": "2026-11-09T21:30:56.001927+00:00",
-  "finished_at": "2026-11-09T21:31:08.213676+00:00",
-  "status": "error",
-  "summary": "Failed at step 'fetch_prices': RequestTimeout: kraken GET https://api.kraken.com/0/public/OHLC?pair=XXBTZUSD&interval=60",
+  "run_id": "hourly-20261109T214541Z",
+  "started_at": "2026-11-09T21:45:41.167712+00:00",
+  "finished_at": "2026-11-09T21:45:44.511435+00:00",
+  "status": "done",
+  "summary": "hold",
   "trigger": "repository_dispatch",
   "steps": [
     {
       "step": "fetch_prices",
       "employee": "price_fetcher",
       "description": "Pull the latest hourly BTC/USD candles from Kraken",
-      "status": "error",
-      "started_at": "2026-11-09T21:30:56.001966+00:00",
-      "finished_at": "2026-11-09T21:31:08.213640+00:00",
-      "duration_ms": 12211,
-      "outputs": {},
-      "error": "RequestTimeout: kraken GET https://api.kraken.com/0/public/OHLC?pair=XXBTZUSD&interval=60"
+      "status": "done",
+      "started_at": "2026-11-09T21:45:41.167742+00:00",
+      "finished_at": "2026-11-09T21:45:43.547259+00:00",
+      "duration_ms": 2379,
+      "outputs": {
+        "source": "Kraken BTC/USD",
+        "closed_candles": 201,
+        "latest_closed_candle": "2026-11-09 20:00:00",
+        "latest_close": 74770.7,
+        "note": "The hour still in progress is left out until it closes"
+      },
+      "error": null
     },
     {
       "step": "check_data",
       "employee": "data_checker",
       "description": "Check the candles for gaps, duplicates and bad prices",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:43.547277+00:00",
+      "finished_at": "2026-11-09T21:45:43.548575+00:00",
+      "duration_ms": 1,
+      "outputs": {
+        "rows_checked": 201,
+        "warnings": [],
+        "verdict": "clean"
+      },
       "error": null
     },
     {
       "step": "compute_indicators",
       "employee": "indicator_analyst",
       "description": "Compute the 24h and 72h moving averages",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:43.548587+00:00",
+      "finished_at": "2026-11-09T21:45:43.551255+00:00",
+      "duration_ms": 2,
+      "outputs": {
+        "candle": "2026-11-09 20:00:00",
+        "close": 74770.7,
+        "short_ma": 74622.98,
+        "long_ma": 75408.13,
+        "gap_pct": -1.041,
+        "windows": "24h / 72h"
+      },
       "error": null
     },
     {
       "step": "check_signal",
       "employee": "signal_watcher",
       "description": "Check whether the averages crossed this hour",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:43.551541+00:00",
+      "finished_at": "2026-11-09T21:45:43.551787+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "crossover": "none",
+        "trend": "24h below 72h",
+        "what_it_means": "Trend is down, staying out of the market",
+        "new_candles_checked": 1,
+        "missed_candles": 0
+      },
       "error": null
     },
     {
       "step": "check_risk",
       "employee": "risk_officer",
       "description": "Check drawdown against the kill switch and the stop-loss",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:43.551794+00:00",
+      "finished_at": "2026-11-09T21:45:43.551824+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "equity": 939.08,
+        "peak_equity": 1016.27,
+        "drawdown_pct": -7.6,
+        "kill_switch_at_pct": -20.0,
+        "trading_halted": false,
+        "position": "flat, no stop-loss to watch"
+      },
       "error": null
     },
     {
       "step": "read_news",
       "employee": "news_reader",
       "description": "Read crypto headlines and score their sentiment",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:43.551828+00:00",
+      "finished_at": "2026-11-09T21:45:44.126046+00:00",
+      "duration_ms": 574,
+      "outputs": {
+        "headlines": 40,
+        "sentiment": "neutral",
+        "score": -0.0795,
+        "sample": [
+          "Robinhood backs tokenization of its stock on OKX\u2013ICE platform even as most companies opt out",
+          "A Bitcoin block just neared a 2015 transaction record, but paid only $180 in fees",
+          "Google\u2019s AI chip push adds more pressure on Nvidia"
+        ],
+        "feeds_failed": [],
+        "used_for_decisions": "no, logged for future research only"
+      },
       "error": null
     },
     {
       "step": "read_mood",
       "employee": "mood_analyst",
       "description": "Read the Crypto Fear & Greed index",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:44.126070+00:00",
+      "finished_at": "2026-11-09T21:45:44.510733+00:00",
+      "duration_ms": 384,
+      "outputs": {
+        "value": 29,
+        "label": "Fear",
+        "used_for_decisions": "no, logged for future research only"
+      },
       "error": null
     },
     {
       "step": "decide_trade",
       "employee": "trader",
       "description": "Decide buy / sell / hold and update the paper portfolio",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:44.510762+00:00",
+      "finished_at": "2026-11-09T21:45:44.511033+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "decision": "hold",
+        "price": 74770.7,
+        "cash_before": 939.08,
+        "cash_after": 939.08,
+        "btc_after": 0.0,
+        "equity": 939.08,
+        "in_position": false
+      },
       "error": null
     },
     {
       "step": "save_state",
       "employee": "record_keeper",
       "description": "Save the portfolio and logs for GitHub to commit",
-      "status": "not_reached",
-      "started_at": null,
-      "finished_at": null,
-      "duration_ms": null,
-      "outputs": {},
+      "status": "done",
+      "started_at": "2026-11-09T21:45:44.511039+00:00",
+      "finished_at": "2026-11-09T21:45:44.511340+00:00",
+      "duration_ms": 0,
+      "outputs": {
+        "files": [
+          "paper_state.json",
+          "paper_trade_log.csv",
+          "market_context_log.csv"
+        ],
+        "pushed_by": "GitHub Actions, right after this run"
+      },
       "error": null
     }
   ]
