@@ -138,6 +138,16 @@ def _run_steps(log):
           f"filter helped on test data: {row['filter_helped_on_test']}")
 
     header_needed = not os.path.exists(HISTORY_FILE)
+    if not header_needed:
+        with open(HISTORY_FILE, newline="") as f:
+            existing_header = next(csv.reader(f))
+        if existing_header != list(row.keys()):
+            raise RuntimeError(
+                f"{HISTORY_FILE} header {existing_header} doesn't match the current "
+                f"row fields {list(row.keys())}. The row shape changed without migrating "
+                f"the file -- fix the header (and backfill/pad existing rows) by hand "
+                f"before appending, instead of writing mismatched columns."
+            )
     with open(HISTORY_FILE, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(row.keys()))
         if header_needed:
