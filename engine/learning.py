@@ -3,28 +3,28 @@ The self-learning condition-analysis layer: given a set of completed trades
 with their entry-time condition fingerprints, compute win rate per
 combination, and refuse to trust combinations with too few samples.
 """
+from dataclasses import replace
 import pandas as pd
+from engine.backtest import run_backtest
 from engine.features import compute_bins, condition_combo
 
 
 def label_trades_with_conditions(df, config):
-    """Re-walk the signals to capture the condition-combo present at each
-    trade's ENTRY (not exit -- using post-entry data would be lookahead)."""
+    """Tag each trade with the condition-combo present at its ENTRY (not exit,
+    using post-entry data would be lookahead).
+
+    Trades come from run_backtest itself, so they get the same stop-loss and
+    fees the live bot pays. The kill switch is turned off here only so one
+    bad stretch doesn't hide the rest of history from the learner.
+    """
     bins = compute_bins(df)
-    in_position = False
-    entry_combo = None
-    labeled = []
-
-    for _, row in df.iterrows():
-        if row["position_change"] == 1 and not in_position:
-            in_position = True
-            entry_combo = condition_combo(row, bins)
-            entry_price = row["close"]
-        elif row["position_change"] == -1 and in_position:
-            pnl_pct = (row["close"] - entry_price) / entry_price * 100
-            labeled.append({"combo": entry_combo, "pnl_pct": pnl_pct, "win": pnl_pct > 0})
-            in_position = False
-
+    result = run_backtest(df, replace(config, max_drawdown_kill=None))
+    rows_by_time = df.set_index("timestamp")
+    labeled = [
+        {"combo": condition_combo(rows_by_time.loc[t["entry_time"]], bins),
+         "pnl_pct": t["net_pnl_pct"], "win": t["net_pnl_pct"] > 0}
+        for t in result.trades
+    ]
     return pd.DataFrame(labeled), bins
 
 

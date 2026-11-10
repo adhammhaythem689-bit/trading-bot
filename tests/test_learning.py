@@ -1,5 +1,24 @@
 import pandas as pd
-from engine.learning import learn_filters
+from engine.config import DEFAULT_CONFIG
+from engine.learning import learn_filters, label_trades_with_conditions
+
+
+def test_labels_use_the_same_stop_loss_and_fees_as_the_bot():
+    # buy at 100, price falls to 90 (past the 3% stop) before the sell signal at 120
+    closes = [100, 90, 120]
+    df = pd.DataFrame({
+        "timestamp": pd.date_range("2026-01-01", periods=3, freq="h"),
+        "close": closes,
+        "position_change": [1, 0, -1],
+        "volatility": [1.0, 2.0, 3.0],
+    })
+    labeled, _ = label_trades_with_conditions(df, DEFAULT_CONFIG)
+
+    fee = DEFAULT_CONFIG.fee_rate
+    expected = ((1 - fee) * 90 / 100 * (1 - fee) - 1) * 100
+    assert len(labeled) == 1, "the stop-loss exit ends the trade, the later sell signal is not a second trade"
+    assert abs(labeled["pnl_pct"].iloc[0] - expected) < 1e-9
+    assert not labeled["win"].iloc[0]
 
 
 def test_min_samples_marks_small_groups_unreliable():

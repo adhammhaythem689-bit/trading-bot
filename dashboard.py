@@ -188,7 +188,7 @@ def index():
 
 @app.route("/api/status")
 def status():
-    state = {"cash": 1000.0, "btc": 0.0, "in_position": False, "trading_halted": False}
+    state = {"cash": DEFAULT_CONFIG.starting_balance, "btc": 0.0, "in_position": False, "trading_halted": False}
     if os.path.exists(STATE_FILE):
         with open(STATE_FILE) as f:
             state = json.load(f)
@@ -204,7 +204,8 @@ def status():
             last_price = float(log_df["price"].iloc[-1])
 
     equity = state["cash"] + state["btc"] * (last_price or 0)
-    return_pct = (equity - 1000.0) / 1000.0 * 100
+    start = DEFAULT_CONFIG.starting_balance
+    return_pct = (equity - start) / start * 100
 
     return jsonify({
         "equity": equity,

@@ -116,9 +116,9 @@ def save_state(state):
 def load_learned_filters():
     """Load the self-learning filter table, if 07_analyze_trades.py has produced one.
 
-    Note: the bins used to bucket conditions were fitted on historical CSV
-    data, not live data, so this is an approximation -- acceptable since the
-    filter has zero reliable combinations right now anyway (see repo status).
+    Note: the bins used to bucket conditions are fitted on the stored
+    Binance history (the same data and bins 10_auto_relearn.py used to build
+    learned_filters.json), then applied to live Kraken candles.
     """
     if not os.path.exists(LEARNED_FILTERS_FILE):
         return None, None
@@ -129,7 +129,8 @@ def load_learned_filters():
         hist_df, _ = load_ohlcv_csv("btc_usdt_1h.csv")
         hist_prepared = prepare(hist_df, config)
         bins = compute_bins(hist_prepared)
-    except Exception:
+    except Exception as e:
+        print(f"WARNING: learned filter disabled this run, couldn't fit bins: {e}", file=sys.stderr)
         return None, None
     return filters, bins
 

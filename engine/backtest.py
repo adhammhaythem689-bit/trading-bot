@@ -6,7 +6,7 @@ Behavior is controlled entirely through StrategyConfig:
   - risk_per_trade/stop_loss_pct/max_drawdown_kill = None disables that
     piece of risk management (used for the "baseline, no risk mgmt" report)
   - learned_filters + bins, if provided, skip trades whose condition-combo
-    has a reliable (n >= config.min_samples) win rate below the threshold
+    is reliable (n >= config.min_samples) and loses money on average
 
 This also means the live paper trader (06) and the backtester are no longer
 two separate implementations that can quietly drift apart, 06 now calls the
@@ -50,6 +50,8 @@ def run_backtest(df, config, learned_filters=None, bins=None):
     trading_halted = False
     halted_at = None
     peak_equity = config.starting_balance
+    entry_time = None
+    entry_capital = 0.0
     trades = []
     equity_curve = []
     skipped_by_filter = 0
@@ -70,9 +72,11 @@ def run_backtest(df, config, learned_filters=None, bins=None):
                     and price <= entry_price * (1 - config.stop_loss_pct))
 
         if stop_hit:
-            cash += (btc * price) * (1 - config.fee_rate)
-            trades.append({"exit_time": row["timestamp"], "exit_price": price,
-                            "pnl_pct": (price - entry_price) / entry_price * 100, "reason": "stop_loss"})
+            proceeds = (btc * price) * (1 - config.fee_rate)
+            cash += proceeds
+            trades.append({"entry_time": entry_time, "exit_time": row["timestamp"], "exit_price": price,
+                            "pnl_pct": (price - entry_price) / entry_price * 100,
+                            "net_pnl_pct": (proceeds / entry_capital - 1) * 100, "reason": "stop_loss"})
             btc = 0.0
             in_position = False
 
@@ -90,12 +94,16 @@ def run_backtest(df, config, learned_filters=None, bins=None):
                 btc = (trade_capital * (1 - config.fee_rate)) / price
                 cash -= trade_capital
                 entry_price = price
+                entry_time = row["timestamp"]
+                entry_capital = trade_capital
                 in_position = True
 
         elif row["position_change"] == -1 and in_position:
-            cash += (btc * price) * (1 - config.fee_rate)
-            trades.append({"exit_time": row["timestamp"], "exit_price": price,
-                            "pnl_pct": (price - entry_price) / entry_price * 100, "reason": "signal"})
+            proceeds = (btc * price) * (1 - config.fee_rate)
+            cash += proceeds
+            trades.append({"entry_time": entry_time, "exit_time": row["timestamp"], "exit_price": price,
+                            "pnl_pct": (price - entry_price) / entry_price * 100,
+                            "net_pnl_pct": (proceeds / entry_capital - 1) * 100, "reason": "signal"})
             btc = 0.0
             in_position = False
 

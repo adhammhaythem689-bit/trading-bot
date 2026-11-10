@@ -1,20 +1,20 @@
 {
   "volatility=high": {
     "n": 47,
-    "win_rate": 40.4,
-    "avg_pnl_pct": 0.61,
+    "win_rate": 36.2,
+    "avg_pnl_pct": 0.18,
     "reliable": true
   },
   "volatility=low": {
     "n": 58,
-    "win_rate": 32.8,
-    "avg_pnl_pct": 0.6,
+    "win_rate": 31.0,
+    "avg_pnl_pct": 0.31,
     "reliable": true
   },
   "volatility=medium": {
     "n": 39,
-    "win_rate": 25.6,
-    "avg_pnl_pct": -0.31,
+    "win_rate": 20.5,
+    "avg_pnl_pct": -0.54,
     "reliable": true
   }
 }
