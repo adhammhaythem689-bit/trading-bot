@@ -48,6 +48,44 @@ def test_no_reentry_after_a_stop_until_the_signal_resets():
     assert len(res["trades"]) == 1 and res["open_trade"] is None
 
 
+def test_short_profits_when_price_falls_and_loses_when_it_rises():
+    target = pd.Series([-1, -1, -1, -1], dtype=float)
+    down = simulate(candles([100, 100, 90, 80]), target, cost=0.0, short_cost_per_hour=0.0)
+    up = simulate(candles([100, 100, 110, 120]), target, cost=0.0, short_cost_per_hour=0.0)
+    assert down["equity"][-1] == pytest.approx(1200)   # 10 units shorted at 100, price 80
+    assert up["equity"][-1] == pytest.approx(800)      # price 120
+
+
+def test_short_stop_loss_fills_at_the_stop_or_the_gap_open():
+    # short entered at 100, stop 3% = 103; candle 2 gaps up to open at 110 -> fill at 110
+    df = candles([100, 100, 110, 110])
+    res = simulate(df, pd.Series([-1] * 4, dtype=float), cost=0.0, stop_loss=0.03, short_cost_per_hour=0.0)
+    trade = res["trades"][0]
+    assert trade["side"] == "short" and trade["reason"] == "stop_loss" and trade["exit_price"] == 110
+    assert trade["pnl_pct"] == pytest.approx(-10.0)
+
+
+def test_no_short_reentry_after_a_stop_until_the_signal_resets():
+    df = candles([100, 100, 110, 110, 110, 110])
+    res = simulate(df, pd.Series([-1] * 6, dtype=float), cost=0.0, stop_loss=0.03, short_cost_per_hour=0.0)
+    assert len(res["trades"]) == 1 and res["open_trade"] is None
+
+
+def test_flipping_from_long_to_short_trades_both_legs_at_the_same_open():
+    df = candles([100, 100, 100, 110, 110])
+    target = pd.Series([1, 1, -1, -1, -1], dtype=float)  # decided at close, filled next open
+    res = simulate(df, target, cost=0.0, short_cost_per_hour=0.0)
+    assert res["trades"][0]["side"] == "long" and res["trades"][0]["exit_price"] == 110
+    assert res["open_trade"]["side"] == "short" and res["open_trade"]["entry_price"] == 110
+    assert res["equity"][-1] == pytest.approx(1100)
+
+
+def test_holding_a_short_costs_money_every_hour():
+    df = candles([100] * 5)
+    res = simulate(df, pd.Series([-1] * 5, dtype=float), cost=0.0, short_cost_per_hour=0.001)
+    assert res["equity"][-1] == pytest.approx(1000 - 4)  # 4 hours held, 1 unit-value each hour
+
+
 def test_strategies_do_not_look_ahead():
     """Changing the future must not change any earlier target."""
     rng = np.random.default_rng(0)

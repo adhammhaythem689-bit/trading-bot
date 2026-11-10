@@ -2,9 +2,10 @@
 Candidate strategies for the research engine.
 
 Each strategy turns OHLCV data into a TARGET position per candle: 1 = hold
-BTC, 0 = hold cash (long-only, spot, no leverage). The target at candle t
-uses only data up to and including t's close; the simulator applies it from
-the NEXT candle, so no strategy can trade on information it didn't have.
+BTC, 0 = hold cash, -1 = short BTC (profit when price falls). No leverage.
+Only the "_ls" strategies ever return -1. The target at candle t uses only
+data up to and including t's close; the simulator applies it from the NEXT
+candle, so no strategy can trade on information it didn't have.
 
 Every strategy is a plain function plus a small parameter grid. Grids are
 kept small on purpose: the more combinations tried, the more likely one
@@ -78,6 +79,36 @@ def momentum(df, lookback):
     return (df["close"].pct_change(lookback) > 0).astype(float)
 
 
+def sma_cross_ls(df, short, long):
+    """Long when the short average is above the long one, short when below."""
+    s = df["close"].rolling(short).mean()
+    l = df["close"].rolling(long).mean()
+    return pd.Series(np.where(s > l, 1.0, -1.0), index=df.index).where(l.notna(), 0.0)
+
+
+def ema_cross_ls(df, short, long):
+    s = df["close"].ewm(span=short, adjust=False).mean()
+    l = df["close"].ewm(span=long, adjust=False).mean()
+    warm = pd.Series(np.arange(len(df)) >= long, index=df.index)
+    return pd.Series(np.where(s > l, 1.0, -1.0), index=df.index).where(warm, 0.0)
+
+
+def price_vs_sma_ls(df, window):
+    """Long while price is above its long average, short while below."""
+    m = df["close"].rolling(window).mean()
+    return pd.Series(np.where(df["close"] > m, 1.0, -1.0), index=df.index).where(m.notna(), 0.0)
+
+
+def donchian_ls(df, entry, exit_):
+    """Long on a breakout above the prior `entry`-hour high, short on a break
+    below the prior `entry`-hour low; each side exits on the opposite `exit_`-hour extreme."""
+    upper_e, lower_e = df["high"].rolling(entry).max().shift(1), df["low"].rolling(entry).min().shift(1)
+    upper_x, lower_x = df["high"].rolling(exit_).max().shift(1), df["low"].rolling(exit_).min().shift(1)
+    long_state = _hold_between(df["close"] > upper_e, df["close"] < lower_x)
+    short_state = _hold_between(df["close"] < lower_e, df["close"] > upper_x)
+    return long_state - short_state
+
+
 STRATEGIES = {
     "sma_cross": {
         "family": "Trend following", "fn": sma_cross,
@@ -114,5 +145,25 @@ STRATEGIES = {
         "family": "Momentum", "fn": momentum,
         "label": "Time-series momentum",
         "grid": [{"lookback": lb} for lb in (24, 72, 168, 336)],
+    },
+    "sma_cross_ls": {
+        "family": "Long/short trend", "fn": sma_cross_ls,
+        "label": "SMA crossover, long or short",
+        "grid": [{"short": s, "long": l} for s in (12, 24, 48) for l in (72, 120, 168) if s < l],
+    },
+    "ema_cross_ls": {
+        "family": "Long/short trend", "fn": ema_cross_ls,
+        "label": "EMA crossover, long or short",
+        "grid": [{"short": s, "long": l} for s in (12, 24, 48) for l in (72, 120, 168) if s < l],
+    },
+    "price_vs_sma_ls": {
+        "family": "Long/short trend", "fn": price_vs_sma_ls,
+        "label": "Long above / short below the long average",
+        "grid": [{"window": w} for w in (72, 168, 336, 720)],
+    },
+    "donchian_ls": {
+        "family": "Long/short trend", "fn": donchian_ls,
+        "label": "Donchian channel breakout, long or short",
+        "grid": [{"entry": e, "exit_": x} for e in (24, 72, 168) for x in (12, 24, 72) if x <= e],
     },
 }

@@ -7,9 +7,12 @@ Execution model (stricter than the original engine/backtest.py):
   - optional stop-loss: fills at the stop price, or at the open if the
     candle opened below it (a gap). Hourly candles can't show the exact
     path inside the hour, so this is an approximation, stated as such.
-  - after a stop-loss, no re-entry until the strategy's target goes to 0
-    and back to 1 (otherwise it would buy straight back in)
-  - long-only, 100% of equity when in a position, no leverage
+  - after a stop-loss, no re-entry in the same direction until the strategy's
+    target leaves that direction (otherwise it would re-enter straight away)
+  - 100% of equity when in a position, no leverage. Targets are 1 (long),
+    0 (cash) or -1 (short). A short earns when price falls, loses when it
+    rises, and pays SHORT_COST_PER_HOUR on its value while open (an assumed
+    borrow/funding cost; real funding varies and can flip sign)
 
 Walk-forward: settings are chosen on the TRAIN window only (best Sharpe),
 then run on the next TEST window the selection never saw. Test windows are
@@ -21,56 +24,73 @@ import numpy as np
 import pandas as pd
 
 COST_PER_SIDE = 0.0015  # 0.10% fee + 0.05% slippage
+SHORT_COST_PER_HOUR = 0.0001 / 8  # assumed 0.01% per 8h to hold a short
 HOURS_PER_YEAR = 24 * 365
 
 
-def simulate(df, target, cost=COST_PER_SIDE, stop_loss=None, start_equity=1000.0):
-    o, l, c = df["open"].to_numpy(), df["low"].to_numpy(), df["close"].to_numpy()
+def simulate(df, target, cost=COST_PER_SIDE, stop_loss=None, start_equity=1000.0,
+             short_cost_per_hour=SHORT_COST_PER_HOUR):
+    o, h, l, c = (df[k].to_numpy() for k in ("open", "high", "low", "close"))
     ts = df["timestamp"].to_numpy()
     wanted = target.shift(1).fillna(0).to_numpy()  # decided at the previous close
 
     cash, units, entry_price, entry_i = start_equity, 0.0, 0.0, None
-    stopped = False
+    side = 0           # 1 long, -1 short, 0 cash
+    collateral = 0.0   # money committed to the open position, after the entry fee
+    funding = 0.0      # short holding cost accrued so far
+    blocked = 0        # direction we may not re-enter after being stopped out
     equity, trades = np.empty(len(df)), []
     in_pos_count = 0
 
+    def mark(price):
+        if side == 1:
+            return units * price
+        return collateral + units * (entry_price - price) - funding
+
     def close_trade(i, price, reason):
-        nonlocal cash, units
-        cash = units * price * (1 - cost)
-        gross_in = trades_open["cash_in"]
+        nonlocal cash, units, side, funding
+        cash = mark(price) - units * price * cost
         trades.append({"entry_time": ts[entry_i], "entry_price": entry_price, "exit_time": ts[i],
-                       "exit_price": price, "pnl_pct": (cash / gross_in - 1) * 100, "reason": reason,
-                       "hours": i - entry_i})
-        units = 0.0
+                       "exit_price": price, "pnl_pct": (cash / trades_open["cash_in"] - 1) * 100,
+                       "reason": reason, "hours": i - entry_i, "side": "long" if side == 1 else "short"})
+        units, side, funding = 0.0, 0, 0.0
 
     trades_open = {}
     for i in range(len(df)):
-        want = wanted[i]
-        if stopped and want == 0:
-            stopped = False
-        if stopped:
+        want = int(wanted[i])
+        if blocked and want != blocked:
+            blocked = 0
+        if blocked:
             want = 0
 
-        if want == 1 and units == 0:
-            trades_open = {"cash_in": cash}
-            units = cash * (1 - cost) / o[i]
-            entry_price, entry_i, cash = o[i], i, 0.0
-        elif want == 0 and units > 0:
-            close_trade(i, o[i], "signal")
+        if want != side:
+            if side != 0:
+                close_trade(i, o[i], "signal")
+            if want != 0:
+                trades_open = {"cash_in": cash}
+                collateral = cash * (1 - cost)
+                units = collateral / o[i]
+                entry_price, entry_i, cash, side = o[i], i, 0.0, want
 
-        if units > 0 and stop_loss is not None:
-            stop_price = entry_price * (1 - stop_loss)
-            if l[i] <= stop_price:
-                close_trade(i, min(o[i], stop_price), "stop_loss")
-                stopped = True
+        if side == -1:
+            funding += units * c[i] * short_cost_per_hour
 
-        if units > 0:
+        if side != 0 and stop_loss is not None:
+            if side == 1 and l[i] <= entry_price * (1 - stop_loss):
+                blocked = 1
+                close_trade(i, min(o[i], entry_price * (1 - stop_loss)), "stop_loss")
+            elif side == -1 and h[i] >= entry_price * (1 + stop_loss):
+                blocked = -1
+                close_trade(i, max(o[i], entry_price * (1 + stop_loss)), "stop_loss")
+
+        if side != 0:
             in_pos_count += 1
-        equity[i] = cash + units * c[i]
+        equity[i] = cash + (mark(c[i]) if side != 0 else 0.0)
 
     open_trade = None
-    if units > 0:
+    if side != 0:
         open_trade = {"entry_time": ts[entry_i], "entry_price": entry_price,
+                      "side": "long" if side == 1 else "short",
                       "unrealized_pct": (equity[-1] / trades_open["cash_in"] - 1) * 100}
     return {"equity": equity, "trades": trades, "open_trade": open_trade,
             "exposure": in_pos_count / max(1, len(df))}
