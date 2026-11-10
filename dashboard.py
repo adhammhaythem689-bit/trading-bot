@@ -10,13 +10,16 @@ Written for someone who does NOT read code: plain-English labels, no raw
 jargon like "volatility=low" or win-rate tables. If you want the full
 technical detail, read learned_filters.json / paper_trade_log.csv directly.
 
-Run it with:  python dashboard.py
-Then open:    http://127.0.0.1:5000  in your browser
+Easiest: double-click "Start Dashboard.bat" (uses the project's venv and
+opens your browser). Or run:  venv\\Scripts\\python dashboard.py --open
 """
 from flask import Flask, jsonify, render_template_string
 import json
 import os
 import re
+import sys
+import threading
+import webbrowser
 import pandas as pd
 from engine.config import DEFAULT_CONFIG
 
@@ -270,5 +273,11 @@ def _learning_status():
 
 
 if __name__ == "__main__":
-    print("\nDashboard running at http://127.0.0.1:5000 (local only)\n")
+    # the bot's data files are relative paths, so work from this file's folder
+    # even when started from somewhere else
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    url = "http://127.0.0.1:5000"
+    print(f"\nDashboard running at {url} (local only)\n")
+    if "--open" in sys.argv:
+        threading.Timer(1.5, webbrowser.open, args=[url]).start()
     app.run(debug=False, port=5000)
