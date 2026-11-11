@@ -1,5 +1,5 @@
 {
-  "note": "Live paper experiments. Settings are the ones the walk-forward research chose in its most recent fold (research/report.json, 2026-10-18). None of these showed a validated edge; they run to collect live evidence, not because they're expected to win.",
+  "note": "Live paper experiments. The three hourly ones use the settings the walk-forward research chose in its most recent fold (research/report.json, 2026-10-18); none showed a validated edge. The two daily ones (daily_btc, daily_eth) come from a 2018-2026 daily-candle backtest across 101 markets; they trade at most a few times a month, so months of live results can't confirm them. All run to collect live evidence, not because they're expected to win.",
   "experiments": [
     {
       "id": "ema_trend",
@@ -27,6 +27,30 @@
       "params": {"low": 25, "high": 60, "trend_window": 168},
       "stop_loss": null,
       "research_note": "Unseen Jul 2025 - Oct 2026: -1.9% (BTC -23.1%), max drawdown -3.9%, only 4 trades in 15 months, mostly in cash"
+    },
+    {
+      "id": "daily_btc",
+      "employee": "daily_btc_researcher",
+      "description": "Daily BTC trend experiment: hold BTC while its price is above its 100-day average, 10% stop-loss",
+      "strategy": "price_above_sma",
+      "params": {"window": 100},
+      "stop_loss": 0.10,
+      "symbol": "BTC/USD",
+      "timeframe": "1d",
+      "kill_switch": null,
+      "research_note": "Backtest Jan 2018 - Nov 2026 on daily candles, settings fixed in advance and not tuned: +37.4%/yr vs +20.7%/yr for holding BTC, worst drop -53% vs -81%, 57 trades. Most nearby settings (50 to 150 days) also beat holding. Not yet confirmed live."
+    },
+    {
+      "id": "daily_eth",
+      "employee": "daily_eth_researcher",
+      "description": "Daily ETH trend experiment: hold ETH while its price is above its 100-day average, 10% stop-loss",
+      "strategy": "price_above_sma",
+      "params": {"window": 100},
+      "stop_loss": 0.10,
+      "symbol": "ETH/USD",
+      "timeframe": "1d",
+      "kill_switch": null,
+      "research_note": "Backtest Jan 2018 - Nov 2026 on daily candles, settings fixed in advance and not tuned: +32.6%/yr vs +12.4%/yr for holding ETH, worst drop -71% vs -94%, 63 trades. Not yet confirmed live."
     }
   ]
 }

@@ -61,6 +61,19 @@ def test_kill_switch_halts_and_exits():
     assert [e["action"] for e in events] == ["HALT", "SELL"]
 
 
+def test_kill_switch_can_be_turned_off():
+    state, _, _ = step(new_state(), closed([100]), pd.Series([1.0]), forming_open=100.0, cost=0.0)
+    state, events, _ = step(state, closed([100, 79]), pd.Series([1.0, 1.0]), 79.0, cost=0.0, kill_switch=None)
+    assert not state["halted"] and state["in_position"] and events == []
+
+
+def test_kill_switch_level_is_configurable():
+    state, _, _ = step(new_state(), closed([100]), pd.Series([1.0]), forming_open=100.0, cost=0.0)
+    # a 21% drop: past the default 20% switch, but not a 50% one
+    state, events, _ = step(state, closed([100, 79]), pd.Series([1.0, 1.0]), 79.0, cost=0.0, kill_switch=0.5)
+    assert not state["halted"] and events == []
+
+
 def test_sell_pnl_includes_both_costs():
     df = closed([100])
     state, _, _ = step(new_state(), df, pd.Series([1.0]), forming_open=100.0, cost=0.01)

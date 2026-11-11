@@ -57,6 +57,10 @@ export const EMPLOYEES = [
     next: "Watches for a new 7-day high to buy, or a 3-day low to sell, at the next new candle." },
   { id: "dip_researcher", title: "Dip Researcher", building: "strategy_lab", run: "experiments",
     next: "Waits for an oversold dip during an uptrend. Expect long stretches with no trades." },
+  { id: "daily_btc_researcher", title: "Daily BTC Researcher", building: "strategy_lab", run: "experiments",
+    next: "Checks once a day whether BTC is above its 100-day average. Expect few trades and long stretches in cash." },
+  { id: "daily_eth_researcher", title: "Daily ETH Researcher", building: "strategy_lab", run: "experiments",
+    next: "Same daily rule as the BTC researcher, applied to ETH." },
 
   // not scheduled, data comes from the exported backtest snapshot
   { id: "backtest_analyst", title: "Backtest Analyst", building: "backtest", run: "manual",
@@ -67,7 +71,7 @@ export const EMPLOYEES = [
 export const RUN_SCHEDULES = {
   hourly: "Checks every 15 minutes (:07, :22, :37, :52 UTC) and acts once per new hourly candle. GitHub often runs late or skips checks; missed crossovers are caught up on the next run.",
   daily: "Once a day at 00:15 UTC",
-  experiments: "Alongside the hourly bot, once per new hourly candle. Paper money only; none of these strategies showed a proven edge in research.",
+  experiments: "Alongside the hourly bot. The hourly experiments act once per new hourly candle, the daily BTC and ETH ones once per new daily candle (00:00 UTC). Paper money only; none of these strategies has a confirmed edge.",
   manual: "Not scheduled, runs only when started by hand",
 };
 

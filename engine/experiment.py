@@ -10,7 +10,10 @@ Rules, the same as the walk-forward simulator:
     make it miss. It fills at the stop price, or at the open if the candle
     gapped below it.
   - after a stop, no re-entry until the target has gone back to 0
-  - a 20% drop from the experiment's peak halts it (same kill switch idea)
+  - a 20% drop from the experiment's peak halts it (same kill switch idea),
+    unless the experiment sets kill_switch to None. The daily trend
+    experiments do, because their research had no kill switch and normal
+    drawdowns for that rule are larger than 20%.
 
 Signal entries/exits are never backdated: if runs were skipped, they happen
 at the current price.
@@ -29,7 +32,7 @@ def new_state(starting_cash=1000.0, start_price=None, started_at=None):
             "starting_cash": starting_cash, "trades": 0}
 
 
-def step(state, closed, target, forming_open, stop_loss=None, cost=COST_PER_SIDE):
+def step(state, closed, target, forming_open, stop_loss=None, cost=COST_PER_SIDE, kill_switch=KILL_SWITCH):
     """Advance one experiment. `closed` = closed candles, `target` = strategy
     target aligned with `closed`, `forming_open` = open of the current hour.
     Returns (state, events) where events is a list of dicts describing trades."""
@@ -59,9 +62,10 @@ def step(state, closed, target, forming_open, stop_loss=None, cost=COST_PER_SIDE
 
     equity = state["cash"] + state["btc"] * forming_open
     state["peak_equity"] = max(state["peak_equity"], equity)
-    if not state["halted"] and (equity - state["peak_equity"]) / state["peak_equity"] <= -KILL_SWITCH:
+    if (kill_switch is not None and not state["halted"]
+            and (equity - state["peak_equity"]) / state["peak_equity"] <= -kill_switch):
         state["halted"] = True
-        events.append({"action": "HALT", "reason": "20% below peak equity"})
+        events.append({"action": "HALT", "reason": f"{kill_switch * 100:.0f}% below peak equity"})
 
     want = int(target.iloc[-1]) if not state["stopped"] else 0
     if state["halted"]:

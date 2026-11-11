@@ -46,7 +46,10 @@ function RunChip({ label, run, now, nextAt, previousSlot, lateMinutes }) {
   );
 }
 
-const EXPERIMENT_SHORT_NAMES = { trend_researcher: "Trend", breakout_researcher: "Breakout", dip_researcher: "Dip" };
+const EXPERIMENT_SHORT_NAMES = {
+  trend_researcher: "Trend", breakout_researcher: "Breakout", dip_researcher: "Dip",
+  daily_btc_researcher: "Daily BTC", daily_eth_researcher: "Daily ETH",
+};
 
 function ExperimentsChip({ run, now }) {
   if (!run) return <Chip>Experiments: not started yet</Chip>;
@@ -55,7 +58,7 @@ function ExperimentsChip({ run, now }) {
     const name = EXPERIMENT_SHORT_NAMES[s.employee] || s.employee;
     if (s.status !== "done" || o.return_since_start_pct == null) return `${name} ${STATUS_LABELS[s.status] || s.status}`;
     const r = o.return_since_start_pct;
-    return `${name} ${r >= 0 ? "+" : ""}${r}%${o.in_position ? " (in BTC)" : ""}`;
+    return `${name} ${r >= 0 ? "+" : ""}${r}%${o.in_position ? ` (in ${(o.asset || "BTC/USD").split("/")[0]})` : ""}`;
   });
   const btc = run.steps.find((s) => s.outputs?.btc_since_start_pct != null)?.outputs.btc_since_start_pct;
   return (
