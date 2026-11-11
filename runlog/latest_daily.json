@@ -1,10 +1,10 @@
 {
   "run_type": "daily",
-  "run_id": "daily-20261110T071939Z",
-  "started_at": "2026-11-10T07:19:39.496982+00:00",
-  "finished_at": "2026-11-10T07:19:41.135966+00:00",
+  "run_id": "daily-20261111T062252Z",
+  "started_at": "2026-11-11T06:22:52.112043+00:00",
+  "finished_at": "2026-11-11T06:22:53.371366+00:00",
   "status": "done",
-  "summary": "3/3 patterns trusted, filter helped: False",
+  "summary": "3/3 patterns trusted, filter helped: True",
   "trigger": "schedule",
   "steps": [
     {
@@ -12,15 +12,15 @@
       "employee": "historian",
       "description": "Add newly closed hourly candles from Binance to the stored history",
       "status": "done",
-      "started_at": "2026-11-10T07:19:39.497016+00:00",
-      "finished_at": "2026-11-10T07:19:40.248612+00:00",
-      "duration_ms": 751,
+      "started_at": "2026-11-11T06:22:52.112082+00:00",
+      "finished_at": "2026-11-11T06:22:52.777491+00:00",
+      "duration_ms": 665,
       "outputs": {
         "source": "Binance BTC/USDT (data-api.binance.vision)",
-        "appended": 25,
+        "appended": 23,
         "replaced": 1,
-        "rows": 18236,
-        "last_candle": "2026-11-10 06:00:00",
+        "rows": 18259,
+        "last_candle": "2026-11-11 05:00:00",
         "warnings": []
       },
       "error": null
@@ -30,13 +30,13 @@
       "employee": "historian",
       "description": "Load the stored BTC price history and check its quality",
       "status": "done",
-      "started_at": "2026-11-10T07:19:40.248637+00:00",
-      "finished_at": "2026-11-10T07:19:40.264113+00:00",
-      "duration_ms": 15,
+      "started_at": "2026-11-11T06:22:52.777520+00:00",
+      "finished_at": "2026-11-11T06:22:52.789217+00:00",
+      "duration_ms": 11,
       "outputs": {
-        "candles": 18236,
+        "candles": 18259,
         "first_candle": "2024-10-11 11:00:00",
-        "last_candle": "2026-11-10 06:00:00",
+        "last_candle": "2026-11-11 05:00:00",
         "warnings": []
       },
       "error": null
@@ -46,19 +46,19 @@
       "employee": "pattern_researcher",
       "description": "Tag past trades by market conditions and count trustworthy patterns",
       "status": "done",
-      "started_at": "2026-11-10T07:19:40.264131+00:00",
-      "finished_at": "2026-11-10T07:19:40.549651+00:00",
-      "duration_ms": 285,
+      "started_at": "2026-11-11T06:22:52.789237+00:00",
+      "finished_at": "2026-11-11T06:22:52.985753+00:00",
+      "duration_ms": 196,
       "outputs": {
-        "training_period": "2024-10-11 11:00:00 to 2026-05-04 07:00:00",
+        "training_period": "2024-10-11 11:00:00 to 2026-05-05 00:00:00",
         "trades_tagged": 110,
         "patterns_found": 3,
         "reliable_patterns": 3,
         "trades_needed_per_pattern": 30,
         "most_common": [
-          "volatility=low (n=40, win 37.5%)",
-          "volatility=high (n=37, win 37.8%)",
-          "volatility=medium (n=33, win 27.3%)"
+          "volatility=low (n=40, win 32.5%)",
+          "volatility=high (n=37, win 32.4%)",
+          "volatility=medium (n=33, win 24.2%)"
         ]
       },
       "error": null
@@ -68,15 +68,15 @@
       "employee": "validator",
       "description": "Test whether the pattern filter helps on data it never saw",
       "status": "done",
-      "started_at": "2026-11-10T07:19:40.549670+00:00",
-      "finished_at": "2026-11-10T07:19:40.755568+00:00",
-      "duration_ms": 205,
+      "started_at": "2026-11-11T06:22:52.985771+00:00",
+      "finished_at": "2026-11-11T06:22:53.110004+00:00",
+      "duration_ms": 124,
       "outputs": {
-        "test_period": "2026-05-04 08:00:00 to 2026-11-10 06:00:00",
-        "without_filter_return_pct": -5.74,
-        "with_filter_return_pct": -5.74,
-        "trades_skipped_by_filter": 0,
-        "verdict": "filter did not help"
+        "test_period": "2026-05-05 01:00:00 to 2026-11-11 05:00:00",
+        "without_filter_return_pct": -4.27,
+        "with_filter_return_pct": 3.4,
+        "trades_skipped_by_filter": 10,
+        "verdict": "filter helped"
       },
       "error": null
     },
@@ -85,9 +85,9 @@
       "employee": "pattern_researcher",
       "description": "Save the pattern table the hourly trader reads",
       "status": "done",
-      "started_at": "2026-11-10T07:19:40.755588+00:00",
-      "finished_at": "2026-11-10T07:19:41.135314+00:00",
-      "duration_ms": 379,
+      "started_at": "2026-11-11T06:22:53.110024+00:00",
+      "finished_at": "2026-11-11T06:22:53.370537+00:00",
+      "duration_ms": 260,
       "outputs": {
         "file": "learned_filters.json",
         "patterns_saved": 3,
