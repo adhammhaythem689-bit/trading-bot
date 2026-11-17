@@ -1,4 +1,3 @@
-{"run_id": "hourly-20261109T120056Z", "started_at": "2026-11-09T12:00:56.640350+00:00", "finished_at": "2026-11-09T12:00:59.407111+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261109T130054Z", "started_at": "2026-11-09T13:00:54.454247+00:00", "finished_at": "2026-11-09T13:00:57.771964+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261109T140056Z", "started_at": "2026-11-09T14:00:56.023799+00:00", "finished_at": "2026-11-09T14:00:58.938776+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261109T150057Z", "started_at": "2026-11-09T15:00:57.448813+00:00", "finished_at": "2026-11-09T15:01:00.443278+00:00", "status": "done", "summary": "hold"}
@@ -198,3 +197,4 @@
 {"run_id": "hourly-20261117T140056Z", "started_at": "2026-11-17T14:00:56.481664+00:00", "finished_at": "2026-11-17T14:00:59.069406+00:00", "status": "done", "summary": "BUY at 65088.50"}
 {"run_id": "hourly-20261117T150052Z", "started_at": "2026-11-17T15:00:52.443844+00:00", "finished_at": "2026-11-17T15:00:55.349696+00:00", "status": "done", "summary": "hold"}
 {"run_id": "hourly-20261117T160103Z", "started_at": "2026-11-17T16:01:03.543489+00:00", "finished_at": "2026-11-17T16:01:06.151755+00:00", "status": "done", "summary": "hold"}
+{"run_id": "hourly-20261117T170057Z", "started_at": "2026-11-17T17:00:57.812737+00:00", "finished_at": "2026-11-17T17:01:00.681398+00:00", "status": "done", "summary": "SELL at 63677.60, pnl -2.17%"}
