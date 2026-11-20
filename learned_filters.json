@@ -6,15 +6,15 @@
     "reliable": true
   },
   "volatility=low": {
-    "n": 58,
-    "win_rate": 31.0,
-    "avg_pnl_pct": 0.31,
+    "n": 59,
+    "win_rate": 30.5,
+    "avg_pnl_pct": 0.3,
     "reliable": true
   },
   "volatility=medium": {
-    "n": 39,
-    "win_rate": 20.5,
-    "avg_pnl_pct": -0.54,
+    "n": 38,
+    "win_rate": 21.1,
+    "avg_pnl_pct": -0.55,
     "reliable": true
   }
 }
