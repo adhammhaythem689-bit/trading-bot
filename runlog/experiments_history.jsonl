@@ -1,4 +1,3 @@
-{"run_id": "experiments-20261116T100057Z", "started_at": "2026-11-16T10:00:57.628863+00:00", "finished_at": "2026-11-16T10:01:04.672145+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
 {"run_id": "experiments-20261116T110058Z", "started_at": "2026-11-16T11:00:58.318340+00:00", "finished_at": "2026-11-16T11:01:05.185734+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
 {"run_id": "experiments-20261116T120058Z", "started_at": "2026-11-16T12:00:58.099908+00:00", "finished_at": "2026-11-16T12:01:05.160843+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
 {"run_id": "experiments-20261116T130056Z", "started_at": "2026-11-16T13:00:56.831226+00:00", "finished_at": "2026-11-16T13:01:03.902133+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
@@ -198,3 +197,4 @@
 {"run_id": "experiments-20261124T150102Z", "started_at": "2026-11-24T15:01:02.296208+00:00", "finished_at": "2026-11-24T15:01:09.467499+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
 {"run_id": "experiments-20261124T160055Z", "started_at": "2026-11-24T16:00:55.922269+00:00", "finished_at": "2026-11-24T16:01:03.003853+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
 {"run_id": "experiments-20261124T170105Z", "started_at": "2026-11-24T17:01:05.920999+00:00", "finished_at": "2026-11-24T17:01:13.131513+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
+{"run_id": "experiments-20261124T180103Z", "started_at": "2026-11-24T18:01:03.831037+00:00", "finished_at": "2026-11-24T18:01:11.052462+00:00", "status": "done", "summary": "3/5 experiments traded on a new candle"}
