@@ -45,3 +45,4 @@
 {"run_id": "daily-20261124T095536Z", "started_at": "2026-11-24T09:55:36.376661+00:00", "finished_at": "2026-11-24T09:55:37.553635+00:00", "status": "done", "summary": "3/3 patterns trusted, filter helped: True"}
 {"run_id": "daily-20261125T083543Z", "started_at": "2026-11-25T08:35:43.490707+00:00", "finished_at": "2026-11-25T08:35:46.060766+00:00", "status": "done", "summary": "3/3 patterns trusted, filter helped: True"}
 {"run_id": "daily-20261126T081842Z", "started_at": "2026-11-26T08:18:42.609395+00:00", "finished_at": "2026-11-26T08:18:45.123784+00:00", "status": "done", "summary": "3/3 patterns trusted, filter helped: True"}
+{"run_id": "daily-20261127T083527Z", "started_at": "2026-11-27T08:35:27.582088+00:00", "finished_at": "2026-11-27T08:35:29.248622+00:00", "status": "done", "summary": "3/3 patterns trusted, filter helped: True"}
